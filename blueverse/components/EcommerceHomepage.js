@@ -263,11 +263,11 @@ const EcommerceHomepage = () => {
 
   // Auto-advance hero slider
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % heroSlides.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
   const nextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % heroSlides.length)

@@ -8,7 +8,7 @@ const SearchResults = ({ results, loading, searchTerm }) => {
   if (!results.length && searchTerm) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-600">No products found for "{searchTerm}"</p>
+        <p className="text-gray-600">We couldn&apos;t find any products matching &quot;{query}&quot;. Try different keywords or browse our categories.</p>
       </div>
     );
   }
