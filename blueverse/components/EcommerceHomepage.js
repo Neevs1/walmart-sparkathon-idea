@@ -11,7 +11,9 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
-  Heart
+  Heart,
+  Filter,
+  SlidersHorizontal
 } from "lucide-react"
 
 const EcommerceHomepage = () => {
@@ -19,6 +21,109 @@ const EcommerceHomepage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [cartItems, setCartItems] = useState([])
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [searchResults, setSearchResults] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [filters, setFilters] = useState({
+    category: '',
+    minPrice: '',
+    maxPrice: '',
+    rating: '',
+    sortBy: ''
+  })
+
+  // All products data (simulating database)
+  const allProducts = [
+    {
+      id: 1,
+      name: "Wireless Headphones",
+      price: 79.99,
+      originalPrice: 99.99,
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 234,
+      category: "Electronics",
+      description: "Premium wireless headphones with noise cancellation"
+    },
+    {
+      id: 2,
+      name: "Smart Watch",
+      price: 199.99,
+      originalPrice: 249.99,
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
+      rating: 4.8,
+      reviews: 156,
+      category: "Electronics",
+      description: "Advanced fitness tracking and smart notifications"
+    },
+    {
+      id: 3,
+      name: "Laptop Backpack",
+      price: 45.99,
+      originalPrice: 59.99,
+      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+      rating: 4.3,
+      reviews: 89,
+      category: "Fashion",
+      description: "Durable laptop backpack with multiple compartments"
+    },
+    {
+      id: 4,
+      name: "Coffee Maker",
+      price: 129.99,
+      originalPrice: 159.99,
+      image: "https://images.unsplash.com/photo-1517256673644-36ad11246d21?w=300&h=300&fit=crop",
+      rating: 4.6,
+      reviews: 312,
+      category: "Home & Garden",
+      description: "Automatic drip coffee maker with programmable timer"
+    },
+    {
+      id: 5,
+      name: "Running Shoes",
+      price: 89.99,
+      originalPrice: 120.00,
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 203,
+      category: "Sports",
+      description: "Lightweight running shoes with excellent cushioning"
+    },
+    {
+      id: 6,
+      name: "Cookbook Collection",
+      price: 24.99,
+      originalPrice: 34.99,
+      image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=300&fit=crop",
+      rating: 4.7,
+      reviews: 67,
+      category: "Books",
+      description: "Essential cookbook collection for home chefs"
+    },
+    {
+      id: 7,
+      name: "Wireless Speaker",
+      price: 49.99,
+      originalPrice: 69.99,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
+      rating: 4.2,
+      reviews: 145,
+      category: "Electronics",
+      description: "Portable Bluetooth speaker with rich sound"
+    },
+    {
+      id: 8,
+      name: "Yoga Mat",
+      price: 29.99,
+      originalPrice: 39.99,
+      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 178,
+      category: "Sports",
+      description: "Non-slip yoga mat with carrying strap"
+    }
+  ]
 
   // Hero slider data
   const heroSlides = [
@@ -26,24 +131,21 @@ const EcommerceHomepage = () => {
       id: 1,
       title: "Summer Sale",
       subtitle: "Up to 70% off on all items",
-      image:
-        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop",
       cta: "Shop Now"
     },
     {
       id: 2,
       title: "New Arrivals",
       subtitle: "Discover the latest trends",
-      image:
-        "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&h=600&fit=crop",
+      image: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&h=600&fit=crop",
       cta: "Explore"
     },
     {
       id: 3,
       title: "Electronics Sale",
       subtitle: "Best deals on tech gadgets",
-      image:
-        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=1200&h=600&fit=crop",
+      image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=1200&h=600&fit=crop",
       cta: "Shop Electronics"
     }
   ]
@@ -52,11 +154,7 @@ const EcommerceHomepage = () => {
   const categories = [
     { name: "Electronics", icon: "📱", color: "bg-blue-100 text-blue-800" },
     { name: "Grocery", icon: "🛒", color: "bg-green-100 text-green-800" },
-    {
-      name: "Home & Garden",
-      icon: "🏠",
-      color: "bg-yellow-100 text-yellow-800"
-    },
+    { name: "Home & Garden", icon: "🏠", color: "bg-yellow-100 text-yellow-800" },
     { name: "Fashion", icon: "👗", color: "bg-pink-100 text-pink-800" },
     { name: "Sports", icon: "⚽", color: "bg-purple-100 text-purple-800" },
     { name: "Books", icon: "📚", color: "bg-indigo-100 text-indigo-800" },
@@ -64,49 +162,104 @@ const EcommerceHomepage = () => {
     { name: "Beauty", icon: "💄", color: "bg-red-100 text-red-800" }
   ]
 
-  // Featured products
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Wireless Headphones",
-      price: 79.99,
-      originalPrice: 99.99,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-      rating: 4.5,
-      reviews: 234
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      price: 199.99,
-      originalPrice: 249.99,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-      rating: 4.8,
-      reviews: 156
-    },
-    {
-      id: 3,
-      name: "Laptop Backpack",
-      price: 45.99,
-      originalPrice: 59.99,
-      image:
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
-      rating: 4.3,
-      reviews: 89
-    },
-    {
-      id: 4,
-      name: "Coffee Maker",
-      price: 129.99,
-      originalPrice: 159.99,
-      image:
-        "https://images.unsplash.com/photo-1517256673644-36ad11246d21?w=300&h=300&fit=crop",
-      rating: 4.6,
-      reviews: 312
+  // Featured products (first 4 from allProducts)
+  const featuredProducts = allProducts.slice(0, 4)
+
+  // Search function
+  const performSearch = (query, appliedFilters = filters) => {
+    setLoading(true)
+    
+    // Simulate API delay
+    setTimeout(() => {
+      let results = allProducts
+
+      // Filter by search query
+      if (query.trim()) {
+        results = results.filter(product =>
+          product.name.toLowerCase().includes(query.toLowerCase()) ||
+          product.description.toLowerCase().includes(query.toLowerCase()) ||
+          product.category.toLowerCase().includes(query.toLowerCase())
+        )
+      }
+
+      // Apply filters
+      if (appliedFilters.category) {
+        results = results.filter(product => product.category === appliedFilters.category)
+      }
+
+      if (appliedFilters.minPrice) {
+        results = results.filter(product => product.price >= parseFloat(appliedFilters.minPrice))
+      }
+
+      if (appliedFilters.maxPrice) {
+        results = results.filter(product => product.price <= parseFloat(appliedFilters.maxPrice))
+      }
+
+      if (appliedFilters.rating) {
+        results = results.filter(product => product.rating >= parseFloat(appliedFilters.rating))
+      }
+
+      // Sort results
+      if (appliedFilters.sortBy === 'price-low') {
+        results.sort((a, b) => a.price - b.price)
+      } else if (appliedFilters.sortBy === 'price-high') {
+        results.sort((a, b) => b.price - a.price)
+      } else if (appliedFilters.sortBy === 'rating') {
+        results.sort((a, b) => b.rating - a.rating)
+      } else if (appliedFilters.sortBy === 'reviews') {
+        results.sort((a, b) => b.reviews - a.reviews)
+      }
+
+      setSearchResults(results)
+      setShowSearchResults(true)
+      setLoading(false)
+    }, 300)
+  }
+
+  // Handle search input
+  const handleSearchChange = (e) => {
+    const query = e.target.value
+    setSearchQuery(query)
+    
+    if (query.trim()) {
+      performSearch(query)
+    } else {
+      setShowSearchResults(false)
+      setSearchResults([])
     }
-  ]
+  }
+
+  // Handle search submit
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      performSearch(searchQuery)
+    }
+  }
+
+  // Handle filter change
+  const handleFilterChange = (filterType, value) => {
+    const newFilters = { ...filters, [filterType]: value }
+    setFilters(newFilters)
+    
+    if (searchQuery.trim() || Object.values(newFilters).some(v => v)) {
+      performSearch(searchQuery, newFilters)
+    }
+  }
+
+  // Clear search and filters
+  const clearSearch = () => {
+    setSearchQuery("")
+    setShowSearchResults(false)
+    setSearchResults([])
+    setFilters({
+      category: '',
+      minPrice: '',
+      maxPrice: '',
+      rating: '',
+      sortBy: ''
+    })
+  }
 
   // Auto-advance hero slider
   useEffect(() => {
@@ -141,10 +294,7 @@ const EcommerceHomepage = () => {
 
     if (hasHalfStar) {
       stars.push(
-        <Star
-          key="half"
-          className="w-4 h-4 fill-yellow-400 text-yellow-400 opacity-50"
-        />
+        <Star key="half" className="w-4 h-4 fill-yellow-400 text-yellow-400 opacity-50" />
       )
     }
 
@@ -155,6 +305,51 @@ const EcommerceHomepage = () => {
 
     return stars
   }
+
+  const ProductCard = ({ product }) => (
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded-t-lg"
+        />
+        <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
+          <Heart className="w-4 h-4 text-gray-600" />
+        </button>
+        {product.originalPrice > product.price && (
+          <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
+            {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+          </div>
+        )}
+      </div>
+
+      <div className="p-4">
+        <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
+        <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+        <div className="flex items-center mb-2">
+          <div className="flex items-center">
+            {renderStars(product.rating)}
+          </div>
+          <span className="text-sm text-gray-500 ml-2">({product.reviews})</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-bold text-gray-900">${product.price}</span>
+            {product.originalPrice > product.price && (
+              <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
+            )}
+          </div>
+          <button
+            onClick={() => addToCart(product)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -170,15 +365,9 @@ const EcommerceHomepage = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4 text-sm">
-              <a href="#" className="hover:text-blue-600">
-                Help
-              </a>
-              <a href="#" className="hover:text-blue-600">
-                Orders
-              </a>
-              <a href="#" className="hover:text-blue-600">
-                Account
-              </a>
+              <a href="#" className="hover:text-blue-600">Help</a>
+              <a href="#" className="hover:text-blue-600">Orders</a>
+              <a href="#" className="hover:text-blue-600">Account</a>
             </div>
           </div>
 
@@ -189,39 +378,35 @@ const EcommerceHomepage = () => {
 
               {/* Desktop Navigation */}
               <nav className="hidden md:flex space-x-6">
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-blue-600 font-medium"
-                >
-                  Departments
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-blue-600 font-medium"
-                >
-                  Services
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-700 hover:text-blue-600 font-medium"
-                >
-                  Deals
-                </a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Deals</a>
               </nav>
             </div>
 
-            {/* Search Bar */}
+            {/* Enhanced Search Bar */}
             <div className="flex-1 max-w-xl mx-8">
-              <div className="relative">
+              <form onSubmit={handleSearchSubmit} className="relative">
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={handleSearchChange}
+                  className="w-full px-4 py-2 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
-              </div>
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                  >
+                    <SlidersHorizontal className="w-4 h-4 text-gray-400" />
+                  </button>
+                  <button type="submit" className="p-1 hover:bg-gray-100 rounded">
+                    <Search className="w-4 h-4 text-gray-400" />
+                  </button>
+                </div>
+              </form>
             </div>
 
             {/* Header Actions */}
@@ -241,11 +426,7 @@ const EcommerceHomepage = () => {
                 className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
@@ -255,198 +436,220 @@ const EcommerceHomepage = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <nav className="container mx-auto px-4 py-4 space-y-2">
-              <a
-                href="#"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-              >
-                Departments
-              </a>
-              <a
-                href="#"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-              >
-                Services
-              </a>
-              <a
-                href="#"
-                className="block py-2 text-gray-700 hover:text-blue-600"
-              >
-                Deals
-              </a>
+              <a href="#" className="block py-2 text-gray-700 hover:text-blue-600">Departments</a>
+              <a href="#" className="block py-2 text-gray-700 hover:text-blue-600">Services</a>
+              <a href="#" className="block py-2 text-gray-700 hover:text-blue-600">Deals</a>
             </nav>
+          </div>
+        )}
+
+        {/* Search Filters */}
+        {showFilters && (
+          <div className="container mx-auto px-4 py-4 border-t border-gray-200">
+            <div className="flex flex-wrap gap-4 items-center">
+              <select
+                value={filters.category}
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              >
+                <option value="">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat.name} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+              
+              <input
+                type="number"
+                placeholder="Min Price"
+                value={filters.minPrice}
+                onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-24"
+              />
+              
+              <input
+                type="number"
+                placeholder="Max Price"
+                value={filters.maxPrice}
+                onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-24"
+              />
+              
+              <select
+                value={filters.rating}
+                onChange={(e) => handleFilterChange('rating', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              >
+                <option value="">Any Rating</option>
+                <option value="4">4+ Stars</option>
+                <option value="3">3+ Stars</option>
+                <option value="2">2+ Stars</option>
+              </select>
+              
+              <select
+                value={filters.sortBy}
+                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              >
+                <option value="">Sort By</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+                <option value="reviews">Most Reviews</option>
+              </select>
+              
+              <button
+                onClick={clearSearch}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300"
+              >
+                Clear All
+              </button>
+            </div>
           </div>
         )}
       </header>
 
-      {/* Hero Section */}
-      <section className="relative h-96 overflow-hidden">
-        <div className="relative w-full h-full">
-          {heroSlides.map((slide, index) => (
-            <div
-              key={slide.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4">
-                    {slide.title}
-                  </h1>
-                  <p className="text-xl md:text-2xl mb-8">{slide.subtitle}</p>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors">
-                    {slide.cta}
-                  </button>
-                </div>
-              </div>
+      {/* Search Results Section */}
+      {showSearchResults && (
+        <section className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {loading ? 'Searching...' : `Search Results for "${searchQuery}"`}
+            </h2>
+            <span className="text-gray-600">
+              {!loading && `${searchResults.length} products found`}
+            </span>
+          </div>
+          
+          {loading ? (
+            <div className="flex justify-center items-center h-32">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
-          ))}
-        </div>
-
-        {/* Slider Controls */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition-all"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition-all"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-
-        {/* Slide Indicators */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
-              }`}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          Shop by Category
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-          {categories.map(category => (
-            <div
-              key={category.name}
-              className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer text-center"
-            >
-              <div
-                className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3`}
+          ) : searchResults.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No products found matching your search.</p>
+              <button
+                onClick={clearSearch}
+                className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
               >
-                <span className="text-2xl">{category.icon}</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 text-sm">
-                {category.name}
-              </h3>
+                Clear search and browse all products
+              </button>
             </div>
-          ))}
-        </div>
-      </section>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {searchResults.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
-      {/* Featured Products */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Featured Products
-          </h2>
-          <a
-            href="#"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
+      {/* Hero Section - Hidden when showing search results */}
+      {!showSearchResults && (
+        <section className="relative h-96 overflow-hidden">
+          <div className="relative w-full h-full">
+            {heroSlides.map((slide, index) => (
+              <div
+                key={slide.id}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  index === currentSlide ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{slide.title}</h1>
+                    <p className="text-xl md:text-2xl mb-8">{slide.subtitle}</p>
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors">
+                      {slide.cta}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Slider Controls */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition-all"
           >
-            View All
-          </a>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map(product => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="relative">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
-                <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
-                  <Heart className="w-4 h-4 text-gray-600" />
-                </button>
-                {product.originalPrice > product.price && (
-                  <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
-                    {Math.round(
-                      ((product.originalPrice - product.price) /
-                        product.originalPrice) *
-                        100
-                    )}
-                    % OFF
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  {product.name}
-                </h3>
-                <div className="flex items-center mb-2">
-                  <div className="flex items-center">
-                    {renderStars(product.rating)}
-                  </div>
-                  <span className="text-sm text-gray-500 ml-2">
-                    ({product.reviews})
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-gray-900">
-                      ${product.price}
-                    </span>
-                    {product.originalPrice > product.price && (
-                      <span className="text-sm text-gray-500 line-through">
-                        ${product.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => addToCart(product)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Promotional Banner */}
-      <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Special Offer</h2>
-          <p className="text-xl mb-6">Get free shipping on orders over $50</p>
-          <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-            Shop Now
+            <ChevronLeft className="w-6 h-6" />
           </button>
-        </div>
-      </section>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition-all"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {heroSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
+                }`}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Categories Section - Hidden when showing search results */}
+      {!showSearchResults && (
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Shop by Category</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {categories.map(category => (
+              <div
+                key={category.name}
+                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer text-center"
+                onClick={() => {
+                  handleFilterChange('category', category.name)
+                  setSearchQuery('')
+                }}
+              >
+                <div className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3`}>
+                  <span className="text-2xl">{category.icon}</span>
+                </div>
+                <h3 className="font-semibold text-gray-900 text-sm">{category.name}</h3>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Featured Products - Hidden when showing search results */}
+      {!showSearchResults && (
+        <section className="container mx-auto px-4 py-12">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Featured Products</h2>
+            <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">View All</a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Promotional Banner - Hidden when showing search results */}
+      {!showSearchResults && (
+        <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">Special Offer</h2>
+            <p className="text-xl mb-6">Get free shipping on orders over $50</p>
+            <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              Shop Now
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -454,83 +657,33 @@ const EcommerceHomepage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-lg font-semibold mb-4">ShopMart</h3>
-              <p className="text-gray-400">
-                Your one-stop shop for everything you need.
-              </p>
+              <p className="text-gray-400">Your one-stop shop for everything you need.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Customer Service</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Returns
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Shipping Info
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white">Returns</a></li>
+                <li><a href="#" className="hover:text-white">Shipping Info</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Account</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    My Account
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Order History
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Wishlist
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Newsletter
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white">My Account</a></li>
+                <li><a href="#" className="hover:text-white">Order History</a></li>
+                <li><a href="#" className="hover:text-white">Wishlist</a></li>
+                <li><a href="#" className="hover:text-white">Newsletter</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Press
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Investors
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white">About Us</a></li>
+                <li><a href="#" className="hover:text-white">Careers</a></li>
+                <li><a href="#" className="hover:text-white">Press</a></li>
+                <li><a href="#" className="hover:text-white">Investors</a></li>
               </ul>
             </div>
           </div>
