@@ -2,7 +2,23 @@
 import { useState, useEffect } from "react"
 import { ProductCard } from "./ProductCard"
 import Link from "next/link"
-import { Search, MapPin, ShoppingCart, User, Menu, X, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react"
+import {
+  Search,
+  MapPin,
+  ShoppingCart,
+  User,
+  Menu,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  SlidersHorizontal,
+  MessageCircle,
+  Wand2,
+  ImageIcon,
+  Send,
+  Mic,
+  Upload,
+} from "lucide-react"
 
 const EcommerceHomepage = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -13,6 +29,25 @@ const EcommerceHomepage = () => {
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [showChatbot, setShowChatbot] = useState(false)
+  const [activeTab, setActiveTab] = useState("chat")
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: "1",
+      role: "user",
+      content: "give birthday party theme suggestions",
+      timestamp: "5:47:18 PM",
+    },
+    {
+      id: "2",
+      role: "bot",
+      content: "I'm here to demonstrate AI capabilities. Feel free to ask me anything!",
+      timestamp: "5:47:21 PM",
+    },
+  ])
+  const [chatInput, setChatInput] = useState("")
+  const [textPrompt, setTextPrompt] = useState("")
+  const [conversationStep, setConversationStep] = useState(0)
   const [filters, setFilters] = useState({
     category: "",
     minPrice: "",
@@ -21,7 +56,92 @@ const EcommerceHomepage = () => {
     sortBy: "",
   })
 
-  // All products data (updated to match ProductCard component expectations)
+  // Predefined conversation flow for birthday party planning
+  const conversationFlow = [
+    {
+      userMessage: "I'm planning my son's 10th birthday party",
+      botResponse:
+        "That's wonderful! I'd love to help you plan an amazing birthday party. What does your son like? Does he have any particular themes in mind?",
+    },
+    {
+      userMessage: "He likes Pirates and Pokemon",
+      botResponse: `Great choices! Let me give you detailed suggestions for both themes. Which one would you like to explore first?
+
+🏴‍☠️ **Pirate Theme** - Adventure on the high seas!
+⚡ **Pokemon Theme** - Gotta catch 'em all!
+
+Just let me know which theme interests you more, or I can provide details for both!`,
+    },
+    {
+      userMessage: "Tell me about the Pirate theme",
+      botResponse: `🏴‍☠️ **Pirate Theme Birthday Party:**
+
+**Decorations:**
+- Treasure chest centerpieces
+- Pirate ship cake
+- Black and red balloons
+- Pirate flags and banners
+- "Walk the plank" entrance
+
+**Costumes & Accessories:**
+- Pirate costumes for kids
+- Eye patches for all guests
+- Pirate hats and bandanas
+- Plastic swords
+
+**Activities:**
+- Treasure hunt game
+- "Pin the X on the treasure map"
+- Pirate ship craft station
+
+**Party Favors:**
+- Gold coin chocolates
+- Mini treasure maps
+- Plastic swords
+- Pirate stickers
+- Small treasure chests with candy
+
+This theme creates an adventurous atmosphere that kids absolutely love!`,
+    },
+    {
+      userMessage: "Tell me about the Pokemon theme",
+      botResponse: `⚡ **Pokemon Theme Birthday Party:**
+
+**Decorations:**
+- Pokemon-themed cake (Pikachu or Pokeball design)
+- Pokestop decorations around the house
+- Pokemon balloons and streamers
+- Giant Pokeball centerpieces
+- Pokemon character cutouts
+
+**Costumes & Accessories:**
+- Pokemon costumes (Pikachu, Charizard, etc.)
+- Pokemon trainer hats
+- Pokeball accessories
+
+**Activities:**
+- "Catch the Pokemon" scavenger hunt
+- Pokemon trivia contest
+- Pokemon card trading station
+- Pin the tail on Pikachu
+
+**Party Favors:**
+- Pokemon trading cards
+- Mini Pokemon figurines
+- Pokemon stickers and tattoos
+- Pokeball stress balls
+- Pokemon-themed candy
+
+This theme is perfect for kids who love adventure and collecting!`,
+    },
+    {
+      userMessage: "Thank you so much! This is really helpful.",
+      botResponse:
+        "You're very welcome! I'm glad I could help make your son's 10th birthday special. Both themes would create an unforgettable experience. Do you need help with anything else for the party planning?",
+    },
+  ]
+
+  // All products data
   const allProducts = [
     {
       id: "1",
@@ -161,14 +281,79 @@ const EcommerceHomepage = () => {
   // Featured products (first 4 from allProducts)
   const featuredProducts = allProducts.slice(0, 4)
 
+  // Tab configuration
+  const tabs = [
+    { id: "chat", label: "AI Chat", icon: MessageCircle },
+    { id: "text", label: "Text Generation", icon: Wand2 },
+    { id: "image", label: "Image Analysis", icon: ImageIcon },
+  ]
+
+  // Handle chatbot submit
+  const handleChatSubmit = (e) => {
+    e.preventDefault()
+    if (!chatInput.trim()) return
+
+    const newUserMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: chatInput,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    }
+
+    setChatMessages((prev) => [...prev, newUserMessage])
+    setChatInput("")
+
+    // Simulate bot response based on conversation flow
+    setTimeout(() => {
+      let botResponse = "I'm here to help you with your shopping needs. Feel free to ask me anything!"
+
+      if (conversationStep < conversationFlow.length) {
+        const currentFlow = conversationFlow[conversationStep]
+        if (chatInput.toLowerCase().includes("planning") || chatInput.toLowerCase().includes("birthday")) {
+          botResponse = currentFlow.botResponse
+          setConversationStep((prev) => prev + 1)
+        } else if (chatInput.toLowerCase().includes("pirates") && chatInput.toLowerCase().includes("pokemon")) {
+          botResponse = conversationFlow[1].botResponse
+          setConversationStep(2)
+        } else if (chatInput.toLowerCase().includes("pirate")) {
+          botResponse = conversationFlow[2].botResponse
+          setConversationStep(3)
+        } else if (chatInput.toLowerCase().includes("pokemon")) {
+          botResponse = conversationFlow[3].botResponse
+          setConversationStep(4)
+        } else if (chatInput.toLowerCase().includes("thank")) {
+          botResponse = conversationFlow[4].botResponse
+          setConversationStep(5)
+        }
+      }
+
+      const botMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "bot",
+        content: botResponse,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      }
+
+      setChatMessages((prev) => [...prev, botMessage])
+    }, 1000)
+  }
+
+  // Handle text generation
+  const handleTextGenerate = () => {
+    console.log("Generating text for:", textPrompt)
+  }
+
+  // Handle image upload
+  const handleImageUpload = () => {
+    console.log("Image upload clicked")
+  }
+
   // Search function
   const performSearch = (query, appliedFilters = filters) => {
     setLoading(true)
-
     // Simulate API delay
     setTimeout(() => {
       let results = allProducts
-
       // Filter by search query
       if (query.trim()) {
         results = results.filter(
@@ -178,7 +363,6 @@ const EcommerceHomepage = () => {
             product.category.toLowerCase().includes(query.toLowerCase()),
         )
       }
-
       // Apply filters
       if (appliedFilters.category) {
         results = results.filter((product) => product.category === appliedFilters.category)
@@ -192,7 +376,6 @@ const EcommerceHomepage = () => {
       if (appliedFilters.rating) {
         results = results.filter((product) => product.rating >= Number.parseFloat(appliedFilters.rating))
       }
-
       // Sort results
       if (appliedFilters.sortBy === "price-low") {
         results.sort((a, b) => a.price - b.price)
@@ -203,7 +386,6 @@ const EcommerceHomepage = () => {
       } else if (appliedFilters.sortBy === "reviews") {
         results.sort((a, b) => b.reviews - a.reviews)
       }
-
       setSearchResults(results)
       setShowSearchResults(true)
       setLoading(false)
@@ -214,7 +396,6 @@ const EcommerceHomepage = () => {
   const handleSearchChange = (e) => {
     const query = e.target.value
     setSearchQuery(query)
-
     if (query.trim()) {
       performSearch(query)
     } else {
@@ -235,7 +416,6 @@ const EcommerceHomepage = () => {
   const handleFilterChange = (filterType, value) => {
     const newFilters = { ...filters, [filterType]: value }
     setFilters(newFilters)
-
     if (searchQuery.trim() || Object.values(newFilters).some((v) => v)) {
       performSearch(searchQuery, newFilters)
     }
@@ -273,7 +453,6 @@ const EcommerceHomepage = () => {
 
   const addToCart = (product) => {
     setCartItems((prev) => [...prev, product])
-    // You can add a toast notification here
     console.log(`Added ${product.name} to cart`)
   }
 
@@ -302,7 +481,6 @@ const EcommerceHomepage = () => {
               </a>
             </div>
           </div>
-
           {/* Main header */}
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-8">
@@ -322,8 +500,7 @@ const EcommerceHomepage = () => {
                 </a>
               </nav>
             </div>
-
-            {/* Enhanced Search Bar */}
+            {/* Enhanced Search Bar with Chatbot */}
             <div className="flex-1 max-w-xl mx-8">
               <form onSubmit={handleSearchSubmit} className="relative">
                 <input
@@ -331,9 +508,38 @@ const EcommerceHomepage = () => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full px-4 py-2 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 pr-28 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowChatbot(!showChatbot)}
+                    className="relative p-1 hover:bg-gray-100 rounded-full transition-colors group"
+                    title="AI Demo Integration"
+                  >
+                    {/* Animated purple ring */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-20 animate-pulse"></div>
+                    <div className="absolute inset-0 rounded-full border-2 border-purple-500 opacity-60 animate-ping"></div>
+
+                    {/* Main icon container */}
+                    <div className="relative bg-white rounded-full p-1 border-2 border-purple-400 shadow-sm">
+                      <MessageCircle className="w-4 h-4 text-purple-600" />
+                    </div>
+
+                    {/* Active indicator dot */}
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full border-2 border-white shadow-sm animate-bounce"></div>
+
+                    {/* Hovering tooltip */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                      <div className="flex items-center gap-2">
+                        <span className="text-purple-300">✨</span>
+                        AI Search
+                        <span className="text-blue-300">🔍</span>
+                      </div>
+                      {/* Tooltip arrow */}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </button>
                   <button
                     type="button"
                     onClick={() => setShowFilters(!showFilters)}
@@ -347,7 +553,6 @@ const EcommerceHomepage = () => {
                 </div>
               </form>
             </div>
-
             {/* Header Actions */}
             <div className="flex items-center space-x-4">
               <button className="p-2 hover:bg-gray-100 rounded-lg">
@@ -367,7 +572,6 @@ const EcommerceHomepage = () => {
             </div>
           </div>
         </div>
-
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
@@ -384,7 +588,6 @@ const EcommerceHomepage = () => {
             </nav>
           </div>
         )}
-
         {/* Search Filters */}
         {showFilters && (
           <div className="container mx-auto px-4 py-4 border-t border-gray-200">
@@ -401,7 +604,6 @@ const EcommerceHomepage = () => {
                   </option>
                 ))}
               </select>
-
               <input
                 type="number"
                 placeholder="Min Price"
@@ -409,7 +611,6 @@ const EcommerceHomepage = () => {
                 onChange={(e) => handleFilterChange("minPrice", e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-24"
               />
-
               <input
                 type="number"
                 placeholder="Max Price"
@@ -417,7 +618,6 @@ const EcommerceHomepage = () => {
                 onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm w-24"
               />
-
               <select
                 value={filters.rating}
                 onChange={(e) => handleFilterChange("rating", e.target.value)}
@@ -428,7 +628,6 @@ const EcommerceHomepage = () => {
                 <option value="3">3+ Stars</option>
                 <option value="2">2+ Stars</option>
               </select>
-
               <select
                 value={filters.sortBy}
                 onChange={(e) => handleFilterChange("sortBy", e.target.value)}
@@ -440,13 +639,190 @@ const EcommerceHomepage = () => {
                 <option value="rating">Highest Rated</option>
                 <option value="reviews">Most Reviews</option>
               </select>
-
               <button
                 onClick={clearSearch}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300"
               >
                 Clear All
               </button>
+            </div>
+          </div>
+        )}
+        {/* AI Demo Integration Popup */}
+        {showChatbot && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+              {/* Header */}
+              <div className="text-center p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                    <span className="text-blue-500">✨</span>
+                    AI Demo Integration
+                    <span className="text-purple-500">✨</span>
+                  </h1>
+                  <button onClick={() => setShowChatbot(false)} className="text-gray-500 hover:text-gray-700 p-2">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <p className="text-gray-600 text-lg">Frontend AI capabilities without backend – Perfect for demos!</p>
+              </div>
+
+              {/* Tab Navigation */}
+              <div className="flex justify-center p-4 border-b border-gray-200">
+                <div className="bg-white rounded-lg p-1 shadow-sm border">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
+                          activeTab === tab.id
+                            ? "bg-blue-500 text-white shadow-sm"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-6 overflow-y-auto max-h-[60vh]">
+                {activeTab === "chat" && (
+                  <div className="bg-white rounded-lg shadow-lg border-0">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
+                      <h2 className="text-2xl font-bold">AI Chat Demo</h2>
+                      <p className="text-blue-100">Try asking questions or having a conversation!</p>
+                    </div>
+                    <div className="h-80 overflow-y-auto p-4 space-y-4">
+                      {chatMessages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              message.role === "user" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"
+                            }`}
+                          >
+                            <p className="whitespace-pre-wrap">{message.content}</p>
+                            <p
+                              className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-500"}`}
+                            >
+                              {message.timestamp}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t p-4">
+                      <form onSubmit={handleChatSubmit} className="flex gap-2">
+                        <input
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          placeholder="Type your message..."
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                          type="button"
+                          className="p-2 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg"
+                        >
+                          <Mic className="w-4 h-4" />
+                        </button>
+                        <button type="submit" className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                          <Send className="w-4 h-4" />
+                        </button>
+                      </form>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          onClick={() => setChatInput("I'm planning my son's 10th birthday party")}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                        >
+                          Planning birthday party
+                        </button>
+                        <button
+                          onClick={() => setChatInput("He likes Pirates and Pokemon")}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                        >
+                          Pirates & Pokemon
+                        </button>
+                        <button
+                          onClick={() => setChatInput("Tell me about the Pirate theme")}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                        >
+                          Pirate theme
+                        </button>
+                        <button
+                          onClick={() => setChatInput("Tell me about the Pokemon theme")}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                        >
+                          Pokemon theme
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "text" && (
+                  <div className="bg-white rounded-lg shadow-lg border-0">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
+                      <h2 className="text-2xl font-bold">AI Text Generation</h2>
+                      <p className="text-blue-100">Generate creative content, summaries, or any text content</p>
+                    </div>
+                    <div className="p-6 space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Enter your prompt:</label>
+                        <textarea
+                          value={textPrompt}
+                          onChange={(e) => setTextPrompt(e.target.value)}
+                          placeholder="Write a story about..., Explain how..., Create a summary of..."
+                          className="w-full min-h-32 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <button
+                        onClick={handleTextGenerate}
+                        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold"
+                      >
+                        Generate Text
+                      </button>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-800">
+                          <strong>Demo Mode:</strong> This is a frontend-only demonstration. For production use,
+                          integrate with real AI APIs like OpenAI, Google AI, or similar services.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "image" && (
+                  <div className="bg-white rounded-lg shadow-lg border-0">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
+                      <h2 className="text-2xl font-bold">AI Image Analysis</h2>
+                      <p className="text-blue-100">Upload an image to analyze its content, objects, and context</p>
+                    </div>
+                    <div className="p-6 space-y-6">
+                      <div
+                        onClick={handleImageUpload}
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                      >
+                        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-600 text-lg">Click to upload an image</p>
+                      </div>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-800">
+                          <strong>Demo Mode:</strong> This is a frontend-only demonstration. For production use,
+                          integrate with real AI APIs like OpenAI, Google AI, or similar services.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -461,7 +837,6 @@ const EcommerceHomepage = () => {
             </h2>
             <span className="text-gray-600">{!loading && `${searchResults.length} products found`}</span>
           </div>
-
           {loading ? (
             <div className="flex justify-center items-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -507,7 +882,6 @@ const EcommerceHomepage = () => {
               </div>
             ))}
           </div>
-
           {/* Slider Controls */}
           <button
             onClick={prevSlide}
@@ -521,7 +895,6 @@ const EcommerceHomepage = () => {
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-
           {/* Slide Indicators */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
             {heroSlides.map((_, index) => (
