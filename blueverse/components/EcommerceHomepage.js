@@ -205,103 +205,390 @@ This theme is perfect for kids who love adventure and collecting!`,
 
   // All products data
   const allProducts = [
-    {
-      id: "1",
-      name: "Wireless Headphones",
-      price: 79.99,
-      originalPrice: 99.99,
-      discount: 20,
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-      rating: 4.5,
-      reviews: 234,
-      category: "Electronics",
-      description: "Premium wireless headphones with noise cancellation",
-    },
-    {
-      id: "2",
-      name: "Smart Watch",
-      price: 199.99,
-      originalPrice: 249.99,
-      discount: 20,
-      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-      rating: 4.8,
-      reviews: 156,
-      category: "Electronics",
-      description: "Advanced fitness tracking and smart notifications",
-    },
-    {
-      id: "3",
-      name: "Laptop Backpack",
-      price: 45.99,
-      originalPrice: 59.99,
-      discount: 23,
-      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
-      rating: 4.3,
-      reviews: 89,
-      category: "Fashion",
-      description: "Durable laptop backpack with multiple compartments",
-    },
-    {
-      id: "4",
-      name: "Coffee Maker",
-      price: 129.99,
-      originalPrice: 159.99,
-      discount: 19,
-      image: "https://images.unsplash.com/photo-1517256673644-36ad11246d21?w=300&h=300&fit=crop",
-      rating: 4.6,
-      reviews: 312,
-      category: "Home & Garden",
-      description: "Automatic drip coffee maker with programmable timer",
-    },
-    {
-      id: "5",
-      name: "Running Shoes",
-      price: 89.99,
-      originalPrice: 120.0,
-      discount: 25,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
-      rating: 4.4,
-      reviews: 203,
-      category: "Sports",
-      description: "Lightweight running shoes with excellent cushioning",
-    },
-    {
-      id: "6",
-      name: "Cookbook Collection",
-      price: 24.99,
-      originalPrice: 34.99,
-      discount: 29,
-      image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=300&fit=crop",
-      rating: 4.7,
-      reviews: 67,
-      category: "Books",
-      description: "Essential cookbook collection for home chefs",
-    },
-    {
-      id: "7",
-      name: "Wireless Speaker",
-      price: 49.99,
-      originalPrice: 69.99,
-      discount: 29,
-      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
-      rating: 4.2,
-      reviews: 145,
-      category: "Electronics",
-      description: "Portable Bluetooth speaker with rich sound",
-    },
-    {
-      id: "8",
-      name: "Yoga Mat",
-      price: 29.99,
-      originalPrice: 39.99,
-      discount: 25,
-      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=300&fit=crop",
-      rating: 4.5,
-      reviews: 178,
-      category: "Sports",
-      description: "Non-slip yoga mat with carrying strap",
-    },
-  ]
+  // PIRATE THEME PRODUCTS
+  {
+    id: "1",
+    name: "Kids Pirate Costume Set",
+    price: 24.99,
+    originalPrice: 34.99,
+    discount: 29,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.6,
+    reviews: 187,
+    category: "Party Costumes",
+    description: "Complete pirate costume with vest, bandana, and belt for kids",
+    theme: "pirate"
+  },
+  {
+    id: "2",
+    name: "Pirate Eye Patches (Pack of 12)",
+    price: 8.99,
+    originalPrice: 12.99,
+    discount: 31,
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
+    rating: 4.3,
+    reviews: 98,
+    category: "Party Accessories",
+    description: "Black felt eye patches perfect for pirate party guests",
+    theme: "pirate"
+  },
+  {
+    id: "3",
+    name: "Wooden Treasure Chest Decoration",
+    price: 39.99,
+    originalPrice: 54.99,
+    discount: 27,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.8,
+    reviews: 145,
+    category: "Party Decorations",
+    description: "Authentic-looking wooden treasure chest for party decoration",
+    theme: "pirate"
+  },
+  {
+    id: "4",
+    name: "Pirate Ship Birthday Cake",
+    price: 45.99,
+    originalPrice: 59.99,
+    discount: 23,
+    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
+    rating: 4.9,
+    reviews: 234,
+    category: "Birthday Cakes",
+    description: "Custom pirate ship cake with edible decorations",
+    theme: "pirate"
+  },
+  {
+    id: "5",
+    name: "Pirate Captain Hats (Pack of 8)",
+    price: 16.99,
+    originalPrice: 22.99,
+    discount: 26,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 167,
+    category: "Party Accessories",
+    description: "Black tricorn pirate hats with skull and crossbones",
+    theme: "pirate"
+  },
+  {
+    id: "6",
+    name: "Gold Coin Chocolates (100 pieces)",
+    price: 19.99,
+    originalPrice: 26.99,
+    discount: 26,
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+    rating: 4.7,
+    reviews: 312,
+    category: "Party Treats",
+    description: "Gold foil wrapped chocolate coins for treasure hunt",
+    theme: "pirate"
+  },
+  {
+    id: "7",
+    name: "Pirate Themed Balloons (Pack of 20)",
+    price: 12.99,
+    originalPrice: 17.99,
+    discount: 28,
+    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
+    rating: 4.2,
+    reviews: 89,
+    category: "Party Decorations",
+    description: "Black and red balloons with pirate skull designs",
+    theme: "pirate"
+  },
+  {
+    id: "8",
+    name: "Pirate Treasure Map Return Gifts (Pack of 10)",
+    price: 14.99,
+    originalPrice: 19.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.5,
+    reviews: 76,
+    category: "Return Gifts",
+    description: "Aged-looking treasure maps as party favors",
+    theme: "pirate"
+  },
+
+  // POKEMON THEME PRODUCTS
+  {
+    id: "9",
+    name: "Pokemon Pikachu Costume",
+    price: 29.99,
+    originalPrice: 39.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.8,
+    reviews: 203,
+    category: "Party Costumes",
+    description: "Official Pikachu costume with hood and tail",
+    theme: "pokemon"
+  },
+  {
+    id: "10",
+    name: "Pokemon Birthday Cake",
+    price: 42.99,
+    originalPrice: 55.99,
+    discount: 23,
+    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
+    rating: 4.9,
+    reviews: 267,
+    category: "Birthday Cakes",
+    description: "Custom Pokemon cake with Pikachu and Pokeball decorations",
+    theme: "pokemon"
+  },
+  {
+    id: "11",
+    name: "Pokemon Pokestop Decoration Set",
+    price: 34.99,
+    originalPrice: 44.99,
+    discount: 22,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.7,
+    reviews: 134,
+    category: "Party Decorations",
+    description: "Complete Pokestop decoration with banner and props",
+    theme: "pokemon"
+  },
+  {
+    id: "12",
+    name: "Pokemon Themed Balloons (Pack of 25)",
+    price: 15.99,
+    originalPrice: 21.99,
+    discount: 27,
+    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 112,
+    category: "Party Decorations",
+    description: "Colorful Pokemon character balloons",
+    theme: "pokemon"
+  },
+  {
+    id: "13",
+    name: "Pokemon Card Packs Return Gifts (Pack of 10)",
+    price: 24.99,
+    originalPrice: 32.99,
+    discount: 24,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.8,
+    reviews: 189,
+    category: "Return Gifts",
+    description: "Official Pokemon trading card packs for party favors",
+    theme: "pokemon"
+  },
+  {
+    id: "14",
+    name: "Pokemon Pokeball Return Gifts (Pack of 12)",
+    price: 19.99,
+    originalPrice: 26.99,
+    discount: 26,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.6,
+    reviews: 145,
+    category: "Return Gifts",
+    description: "Mini Pokeball toys that open and close",
+    theme: "pokemon"
+  },
+  {
+    id: "15",
+    name: "Pokemon Trainer Hats (Pack of 8)",
+    price: 18.99,
+    originalPrice: 24.99,
+    discount: 24,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.5,
+    reviews: 98,
+    category: "Party Accessories",
+    description: "Official Pokemon trainer caps for party guests",
+    theme: "pokemon"
+  },
+  {
+    id: "16",
+    name: "Pokemon Plushie Set (Pack of 6)",
+    price: 39.99,
+    originalPrice: 52.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+    rating: 4.9,
+    reviews: 234,
+    category: "Return Gifts",
+    description: "Small Pokemon plush toys including Pikachu, Charmander, and Squirtle",
+    theme: "pokemon"
+  },
+
+  // ELECTRONICS
+  {
+    id: "17",
+    name: "Bluetooth Party Speaker",
+    price: 79.99,
+    originalPrice: 99.99,
+    discount: 20,
+    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
+    rating: 4.6,
+    reviews: 324,
+    category: "Electronics",
+    description: "Portable wireless speaker with LED lights perfect for parties"
+  },
+  {
+    id: "18",
+    name: "Digital Camera for Kids",
+    price: 45.99,
+    originalPrice: 59.99,
+    discount: 23,
+    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
+    rating: 4.3,
+    reviews: 156,
+    category: "Electronics",
+    description: "Kid-friendly digital camera with fun filters and games"
+  },
+  {
+    id: "19",
+    name: "LED Strip Lights",
+    price: 24.99,
+    originalPrice: 34.99,
+    discount: 29,
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 267,
+    category: "Electronics",
+    description: "Color-changing LED lights for party room decoration"
+  },
+  {
+    id: "20",
+    name: "Instant Polaroid Camera",
+    price: 89.99,
+    originalPrice: 119.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
+    rating: 4.7,
+    reviews: 189,
+    category: "Electronics",
+    description: "Instant camera for capturing party memories"
+  },
+  {
+    id: "21",
+    name: "Wireless Headphones",
+    price: 69.99,
+    originalPrice: 89.99,
+    discount: 22,
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+    rating: 4.5,
+    reviews: 234,
+    category: "Electronics",
+    description: "Comfortable wireless headphones for kids"
+  },
+  {
+    id: "22",
+    name: "Gaming Tablet for Kids",
+    price: 149.99,
+    originalPrice: 199.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop",
+    rating: 4.6,
+    reviews: 178,
+    category: "Electronics",
+    description: "Educational gaming tablet with parental controls"
+  },
+
+  // CLOTHING & SHOES
+  {
+    id: "23",
+    name: "Boys Superhero T-Shirt",
+    price: 16.99,
+    originalPrice: 22.99,
+    discount: 26,
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 145,
+    category: "Clothing",
+    description: "Cotton superhero themed t-shirt for boys"
+  },
+  {
+    id: "24",
+    name: "Kids Sneakers",
+    price: 39.99,
+    originalPrice: 54.99,
+    discount: 27,
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
+    rating: 4.5,
+    reviews: 198,
+    category: "Shoes",
+    description: "Comfortable athletic sneakers for active kids"
+  },
+  {
+    id: "25",
+    name: "Boys Cargo Shorts",
+    price: 19.99,
+    originalPrice: 26.99,
+    discount: 26,
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    rating: 4.3,
+    reviews: 123,
+    category: "Clothing",
+    description: "Comfortable cargo shorts with multiple pockets"
+  },
+  {
+    id: "26",
+    name: "Kids Light-Up Shoes",
+    price: 44.99,
+    originalPrice: 59.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
+    rating: 4.7,
+    reviews: 276,
+    category: "Shoes",
+    description: "Fun LED light-up shoes that kids love"
+  },
+  {
+    id: "27",
+    name: "Boys Hoodie Jacket",
+    price: 29.99,
+    originalPrice: 39.99,
+    discount: 25,
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 167,
+    category: "Clothing",
+    description: "Warm and comfortable hoodie for boys"
+  },
+  {
+    id: "28",
+    name: "Canvas Backpack",
+    price: 24.99,
+    originalPrice: 34.99,
+    discount: 29,
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+    rating: 4.3,
+    reviews: 134,
+    category: "Accessories",
+    description: "Durable canvas backpack for school or travel"
+  },
+  {
+    id: "29",
+    name: "Kids Baseball Cap",
+    price: 12.99,
+    originalPrice: 17.99,
+    discount: 28,
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    rating: 4.2,
+    reviews: 89,
+    category: "Accessories",
+    description: "Adjustable baseball cap for kids"
+  },
+  {
+    id: "30",
+    name: "Boys Swim Shorts",
+    price: 18.99,
+    originalPrice: 24.99,
+    discount: 24,
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+    rating: 4.4,
+    reviews: 112,
+    category: "Clothing",
+    description: "Quick-dry swim shorts with fun patterns"
+  }
+];
 
   // Hero slider data
   const heroSlides = [
@@ -387,7 +674,6 @@ This theme is perfect for kids who love adventure and collecting!`,
           setConversationStep(5)
         }
       }
-
       const botMessage = {
         id: (Date.now() + 1).toString(),
         role: "bot",
@@ -398,7 +684,6 @@ This theme is perfect for kids who love adventure and collecting!`,
       setChatMessages((prev) => [...prev, botMessage])
     }, 1000)
   }
-
   // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0]
@@ -762,11 +1047,11 @@ Would you like me to show you specific products that would be perfect for recrea
         {/* AI Demo Integration Popup */}
         {showChatbot && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg w-full max-w-6xl max-h-[85vh] overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+              <div className="text-center p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                     <Sparkles className="text-orange-500" />
                     AI Demo Integration
                     <span className="text-purple-500">✨</span>
@@ -775,242 +1060,207 @@ Would you like me to show you specific products that would be perfect for recrea
                     <X className="w-6 h-6" />
                   </button>
                 </div>
-                <p className="text-gray-600 mt-2">Frontend AI capabilities without backend – Perfect for demos!</p>
+                <p className="text-gray-600 text-lg">Frontend AI capabilities without backend – Perfect for demos!</p>
               </div>
 
-              {/* Horizontal Layout */}
-              <div className="flex h-[70vh]">
-                {/* Left Sidebar - Tab Navigation */}
-                <div className="w-64 bg-gray-50 border-r border-gray-200 p-4">
-                  <div className="space-y-2">
-                    {tabs.map((tab) => {
-                      const Icon = tab.icon
-                      return (
-                        <button
-                          key={tab.id}
-                          onClick={() => setActiveTab(tab.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all text-left ${
-                            activeTab === tab.id
-                              ? "bg-blue-500 text-white shadow-sm"
-                              : "text-gray-600 hover:text-gray-900 hover:bg-white"
-                          }`}
-                        >
-                          <Icon className="w-5 h-5" />
-                          {tab.label}
-                        </button>
-                      )
-                    })}
-                  </div>
+              {/* Tab Navigation */}
+              <div className="flex justify-center p-4 border-b border-gray-200">
+                <div className="bg-white rounded-lg p-1 shadow-sm border">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
+                          activeTab === tab.id
+                            ? "bg-blue-500 text-white shadow-sm"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
 
-                  {/* Quick Actions for Chat */}
-                  {activeTab === "chat" && (
-                    <div className="mt-6">
-                      <h3 className="text-sm font-semibold text-gray-700 mb-3">Quick Start</h3>
-                      <div className="space-y-2">
+              {/* Tab Content */}
+              <div className="p-6 overflow-y-auto max-h-[60vh]">
+                {activeTab === "chat" && (
+                  <div className="bg-white rounded-lg shadow-lg border-0">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
+                      <h2 className="text-2xl font-bold">AI Chat Demo</h2>
+                      <p className="text-blue-100">Try asking questions or having a conversation!</p>
+                    </div>
+                    <div ref={chatMessagesRef} className="h-80 overflow-y-auto p-4 space-y-4 scroll-smooth">
+                      {chatMessages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              message.role === "user" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"
+                            }`}
+                          >
+                            <p className="whitespace-pre-wrap">{message.content}</p>
+                            <p
+                              className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-500"}`}
+                            >
+                              {message.timestamp}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t p-4">
+                      <form onSubmit={handleChatSubmit} className="flex gap-2">
+                        <input
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          placeholder="Type your message..."
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                          type="button"
+                          className="p-2 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg"
+                        >
+                          <Mic className="w-4 h-4" />
+                        </button>
+                        <button type="submit" className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                          <Send className="w-4 h-4" />
+                        </button>
+                      </form>
+                      <div className="mt-3 flex flex-wrap gap-2">
                         <button
                           onClick={() => setChatInput("I'm planning my son's 10th birthday party")}
-                          className="w-full text-xs bg-white hover:bg-gray-100 px-3 py-2 rounded-lg text-left border"
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          🎉 Planning birthday party
+                          Planning birthday party
                         </button>
                         <button
                           onClick={() => setChatInput("He likes Pirates and Pokemon")}
-                          className="w-full text-xs bg-white hover:bg-gray-100 px-3 py-2 rounded-lg text-left border"
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          🏴‍☠️ Pirates & Pokemon
+                          Pirates & Pokemon
                         </button>
                         <button
                           onClick={() => setChatInput("Tell me about the Pirate theme")}
-                          className="w-full text-xs bg-white hover:bg-gray-100 px-3 py-2 rounded-lg text-left border"
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          ⚔️ Pirate theme
+                          Pirate theme
                         </button>
                         <button
                           onClick={() => setChatInput("Tell me about the Pokemon theme")}
-                          className="w-full text-xs bg-white hover:bg-gray-100 px-3 py-2 rounded-lg text-left border"
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          ⚡ Pokemon theme
+                          Pokemon theme
                         </button>
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
-                {/* Right Content Area */}
-                <div className="flex-1 flex flex-col">
-                  {activeTab === "chat" && (
-                    <>
-                      {/* Chat Header */}
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4">
-                        <h2 className="text-xl font-bold">AI Chat Demo</h2>
-                        <p className="text-blue-100 text-sm">Try asking questions or having a conversation!</p>
-                      </div>
-
-                      {/* Chat Messages */}
-                      <div
-                        ref={chatMessagesRef}
-                        className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth bg-gray-50"
-                      >
-                        {chatMessages.map((message) => (
-                          <div
-                            key={message.id}
-                            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                          >
-                            <div
-                              className={`max-w-md px-4 py-3 rounded-lg shadow-sm ${
-                                message.role === "user"
-                                  ? "bg-blue-500 text-white rounded-br-sm"
-                                  : "bg-white text-gray-900 border rounded-bl-sm"
-                              }`}
-                            >
-                              <p className="whitespace-pre-wrap">{message.content}</p>
-                              <p
-                                className={`text-xs mt-2 ${
-                                  message.role === "user" ? "text-blue-100" : "text-gray-500"
-                                }`}
-                              >
-                                {message.timestamp}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Chat Input */}
-                      <div className="border-t bg-white p-4">
-                        <form onSubmit={handleChatSubmit} className="flex gap-3">
+                {activeTab === "image" && (
+                  <div className="bg-white rounded-lg shadow-lg border-0">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
+                      <h2 className="text-2xl font-bold">AI Image Analysis</h2>
+                      <p className="text-blue-100">Upload a birthday party image to identify shopping objects</p>
+                    </div>
+                    <div className="p-6 space-y-6">
+                      {!uploadedImage ? (
+                        <div className="relative">
                           <input
-                            value={chatInput}
-                            onChange={(e) => setChatInput(e.target.value)}
-                            placeholder="Type your message..."
-                            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            id="image-upload"
                           />
-                          <button
-                            type="button"
-                            className="p-3 text-gray-400 hover:text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                          <label
+                            htmlFor="image-upload"
+                            className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors block"
                           >
-                            <Mic className="w-5 h-5" />
-                          </button>
-                          <button
-                            type="submit"
-                            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
-                          >
-                            <Send className="w-5 h-5" />
-                          </button>
-                        </form>
-                      </div>
-                    </>
-                  )}
-
-                  {activeTab === "image" && (
-                    <>
-                      {/* Image Analysis Header */}
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4">
-                        <h2 className="text-xl font-bold">AI Image Analysis</h2>
-                        <p className="text-blue-100 text-sm">
-                          Upload a birthday party image to identify shopping objects
-                        </p>
-                      </div>
-
-                      {/* Image Analysis Content */}
-                      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
-                        {!uploadedImage ? (
-                          <div className="relative h-full flex items-center justify-center">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              id="image-upload"
+                            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-600 text-lg">Click to upload a birthday party image</p>
+                            <p className="text-gray-500 text-sm mt-2">
+                              Upload an image of a birthday party room and I'll identify shopping objects for you!
+                            </p>
+                          </label>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="relative">
+                            <img
+                              src={uploadedImage || "/placeholder.svg"}
+                              alt="Uploaded birthday party"
+                              className="w-full max-h-64 object-cover rounded-lg border"
                             />
-                            <label
-                              htmlFor="image-upload"
-                              className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors w-full max-w-md"
+                            <button
+                              onClick={() => {
+                                setUploadedImage(null)
+                                setImageAnalysisResult("")
+                                setIsAnalyzing(false)
+                              }}
+                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
                             >
-                              <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                              <p className="text-gray-600 text-lg font-medium">
-                                Click to upload a birthday party image
-                              </p>
-                              <p className="text-gray-500 text-sm mt-2">
-                                Upload an image of a birthday party room and I'll identify shopping objects for you!
-                              </p>
-                            </label>
+                              <X className="w-4 h-4" />
+                            </button>
                           </div>
-                        ) : (
-                          <div className="space-y-6">
-                            <div className="relative">
-                              <img
-                                src={uploadedImage || "/placeholder.svg"}
-                                alt="Uploaded birthday party"
-                                className="w-full max-h-80 object-cover rounded-lg border shadow-sm"
-                              />
-                              <button
-                                onClick={() => {
-                                  setUploadedImage(null)
-                                  setImageAnalysisResult("")
-                                  setIsAnalyzing(false)
-                                }}
-                                className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 shadow-lg"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
+
+                          {isAnalyzing && (
+                            <div className="flex items-center justify-center p-8">
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
+                              <span className="text-gray-600">Analyzing image for shopping objects...</span>
                             </div>
+                          )}
 
-                            {isAnalyzing && (
-                              <div className="flex items-center justify-center p-8 bg-white rounded-lg border">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
-                                <span className="text-gray-600">Analyzing image for shopping objects...</span>
-                              </div>
-                            )}
+                          {imageAnalysisResult && (
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              <h3 className="font-semibold text-gray-900 mb-3">Analysis Results:</h3>
+                              <div className="text-gray-700 whitespace-pre-wrap">{imageAnalysisResult}</div>
 
-                            {imageAnalysisResult && (
-                              <div className="bg-white rounded-lg p-6 border shadow-sm">
-                                <h3 className="font-semibold text-gray-900 mb-4 text-lg">Analysis Results:</h3>
-                                <div className="text-gray-700 whitespace-pre-wrap mb-6">{imageAnalysisResult}</div>
-
-                                {/* Show birthday party products */}
-                                <div>
-                                  <h4 className="font-semibold text-gray-900 mb-4">Recommended Products:</h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {birthdayPartyProducts.slice(0, 4).map((product) => (
-                                      <div
-                                        key={product.id}
-                                        className="bg-gray-50 rounded-lg p-4 border hover:shadow-md transition-shadow"
-                                      >
-                                        <img
-                                          src={product.image || "/placeholder.svg"}
-                                          alt={product.name}
-                                          className="w-full h-32 object-cover rounded mb-3"
-                                        />
-                                        <h5 className="font-medium text-sm text-gray-900 mb-2">{product.name}</h5>
-                                        <div className="flex items-center justify-between">
-                                          <span className="text-blue-600 font-bold">${product.price}</span>
-                                          <button
-                                            onClick={() => addToCart(product)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 font-medium"
-                                          >
-                                            Add to Cart
-                                          </button>
-                                        </div>
+                              {/* Show birthday party products */}
+                              <div className="mt-6">
+                                <h4 className="font-semibold text-gray-900 mb-4">Recommended Products:</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {birthdayPartyProducts.slice(0, 4).map((product) => (
+                                    <div key={product.id} className="bg-white rounded-lg p-3 shadow-sm border">
+                                      <img
+                                        src={product.image || "/placeholder.svg"}
+                                        alt={product.name}
+                                        className="w-full h-32 object-cover rounded mb-2"
+                                      />
+                                      <h5 className="font-medium text-sm text-gray-900 mb-1">{product.name}</h5>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-blue-600 font-bold text-sm">${product.price}</span>
+                                        <button
+                                          onClick={() => addToCart(product)}
+                                          className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600"
+                                        >
+                                          Add to Cart
+                                        </button>
                                       </div>
-                                    ))}
-                                  </div>
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
-                            )}
-                          </div>
-                        )}
-
-                        <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                          <p className="text-yellow-800 text-sm">
-                            <strong>Demo Mode:</strong> This is a frontend-only demonstration. For production use,
-                            integrate with real AI APIs like OpenAI Vision, Google Cloud Vision, or similar services.
-                          </p>
+                            </div>
+                          )}
                         </div>
+                      )}
+
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-800">
+                          <strong>Demo Mode:</strong> This is a frontend-only demonstration. For production use,
+                          integrate with real AI APIs like OpenAI Vision, Google Cloud Vision, or similar services.
+                        </p>
                       </div>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
