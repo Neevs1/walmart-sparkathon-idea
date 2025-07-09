@@ -416,3 +416,10 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+#Backend related files
+# FastAPI backend
+/backend/__pycache__/
+/backend/.venv/
+/backend/*.pyc
+/backend/.pytest_cache/
