@@ -1053,14 +1053,14 @@ Would you like me to show you specific products that would be perfect for recrea
                 <div className="flex items-center justify-between mb-4">
                   <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                     <Sparkles className="text-orange-500" />
-                    AI Demo Integration
+                    Enhanced Search - Powered by AI
                     <span className="text-purple-500">✨</span>
                   </h1>
                   <button onClick={() => setShowChatbot(false)} className="text-gray-500 hover:text-gray-700 p-2">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
-                <p className="text-gray-600 text-lg">Frontend AI capabilities without backend – Perfect for demos!</p>
+                <p className="text-gray-600 text-lg">Use our AI tools to get the right products for you!</p>
               </div>
 
               {/* Tab Navigation */}
@@ -1167,7 +1167,7 @@ Would you like me to show you specific products that would be perfect for recrea
                   <div className="bg-white rounded-lg shadow-lg border-0">
                     <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
                       <h2 className="text-2xl font-bold">AI Image Analysis</h2>
-                      <p className="text-blue-100">Upload a birthday party image to identify shopping objects</p>
+                      <p className="text-blue-100">Upload an image to identify shopping objects</p>
                     </div>
                     <div className="p-6 space-y-6">
                       {!uploadedImage ? (
@@ -1184,9 +1184,9 @@ Would you like me to show you specific products that would be perfect for recrea
                             className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors block"
                           >
                             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-600 text-lg">Click to upload a birthday party image</p>
+                            <p className="text-gray-600 text-lg">Click to upload an image</p>
                             <p className="text-gray-500 text-sm mt-2">
-                              Upload an image of a birthday party room and I'll identify shopping objects for you!
+                              Upload an image and I'll identify shopping objects for you!
                             </p>
                           </label>
                         </div>
@@ -1254,8 +1254,7 @@ Would you like me to show you specific products that would be perfect for recrea
 
                       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                         <p className="text-yellow-800">
-                          <strong>Demo Mode:</strong> This is a frontend-only demonstration. For production use,
-                          integrate with real AI APIs like OpenAI Vision, Google Cloud Vision, or similar services.
+                          <strong>Demo Mode:</strong> This product is still underdevelopment and may cause some issues.
                         </p>
                       </div>
                     </div>
