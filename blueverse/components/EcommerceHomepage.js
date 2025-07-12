@@ -35,7 +35,7 @@ const EcommerceHomepage = () => {
     {
       id: "1",
       role: "bot",
-      content: "Hello! I'm here to help you plan the perfect birthday party. What can I assist you with today?",
+      content: "Hello! I'm here to enhance your shopping experience. What can I assist you with today?",
       timestamp: "5:47:18 PM",
     },
   ])
