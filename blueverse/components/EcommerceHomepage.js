@@ -86,7 +86,7 @@ const EcommerceHomepage = () => {
       price: 19.99,
       originalPrice: 29.99,
       discount: 33,
-      image: "https://images.unsplash.com/photo-1509909756405-be0199881695?w=300&h=300&fit=crop",
+      image: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Carnival_in_Valletta_-_Pirate_Costume.jpg?20131019130903",
       rating: 4.4,
       reviews: 203,
       category: "Costumes",
