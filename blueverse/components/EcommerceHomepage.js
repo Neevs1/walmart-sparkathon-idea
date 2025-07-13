@@ -591,30 +591,30 @@ This theme is perfect for kids who love adventure and collecting!`,
 ];
 
   // Hero slider data
-  const heroSlides = [
+   const heroSlides = [
     {
       id: 1,
       title: "Summer Sale",
       subtitle: "Up to 70% off on all items",
-      image: "https://img.freepik.com/free-vector/gradient-summer-sale-horizontal-banner-template_23-2149399007.jpg",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop",
       cta: "Shop Now",
     },
     {
       id: 2,
       title: "New Arrivals",
       subtitle: "Discover the latest trends",
-      image: "https://img.freepik.com/free-vector/origami-new-arrival-confetti-background_23-2147886981.jpg",
+      image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=1200&h=600&fit=crop",
       cta: "Explore",
     },
     {
       id: 3,
       title: "Electronics Sale",
       subtitle: "Best deals on tech gadgets",
-      image: "https://www.alamy.com/electronics-sale-advertisement-with-assorted-electronic-devices-floating-and-copy-space-image530823434.html?imageid=40F1DF7A-C3E4-4F29-8A08-9C3DCD923AC1&p=313080&pn=1&searchId=dd0d045e83e75dc1dd9e2c70999e979d&searchtype=0",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop",
       cta: "Shop Electronics",
     },
-  ]
- 
+  ];
+
   // Categories data
   const categories = [
     { name: "Electronics", icon: "📱", color: "bg-blue-100 text-blue-800" },
