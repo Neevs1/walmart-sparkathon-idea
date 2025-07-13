@@ -85,7 +85,7 @@ const products = {
     discount: 27,
     rating: 4.8,
     reviews: 145,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=600&fit=crop",
+    image: "https://c.pxhere.com/photos/0a/d2/treasure_chest_chest_gems_box_open_decoration_jewellery_chains-1111685.jpg!d",
     images: [
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=600&fit=crop",
       "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop",
