@@ -596,14 +596,14 @@ This theme is perfect for kids who love adventure and collecting!`,
       id: 1,
       title: "Summer Sale",
       subtitle: "Up to 70% off on all items",
-      image: "/src/7160698.jpg",
+      image: "https://img.freepik.com/free-vector/gradient-summer-sale-horizontal-banner-template_23-2149399007.jpg",
       cta: "Shop Now",
     },
     {
       id: 2,
       title: "New Arrivals",
       subtitle: "Discover the latest trends",
-      image: "https://www.freepik.com/free-vector/origami-new-arrival-confetti-background_2755150.htm#fromView=keyword&page=1&position=32&uuid=0dfcd75a-aa7a-4b9d-b9b4-e1969c34be16&query=New+Arrivals+Banner",
+      image: "https://img.freepik.com/free-vector/origami-new-arrival-confetti-background_23-2147886981.jpg",
       cta: "Explore",
     },
     {
@@ -614,7 +614,7 @@ This theme is perfect for kids who love adventure and collecting!`,
       cta: "Shop Electronics",
     },
   ]
-
+ 
   // Categories data
   const categories = [
     { name: "Electronics", icon: "📱", color: "bg-blue-100 text-blue-800" },
