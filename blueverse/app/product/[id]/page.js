@@ -17,9 +17,9 @@ const products = {
     reviews: 187,
     image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=600&fit=crop",
     images: [
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=600&fit=crop",
+      "https://c.pxhere.com/photos/0a/d2/treasure_chest_chest_gems_box_open_decoration_jewellery_chains-1111685.jpg!d",
+      "https://c.pxhere.com/photos/b4/15/treasure_gems_box_treasure_chest_decoration_jewellery_chains_isolated-1111692.jpg!d",
+      "https://c.pxhere.com/photos/49/a0/treasure_gems_box_treasure_chest_decoration_jewellery_chains_isolated-1111691.jpg!d",
     ],
     category: "Party Costumes",
     inStock: true,
