@@ -50,9 +50,9 @@ const products = {
     discount: 31,
     rating: 4.3,
     reviews: 98,
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop",
+    image: "https://upload.wikimedia.org/wikipedia/commons/8/88/Pirate_costume_eyepatch.jpg",
     images: [
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop",
+      "https://upload.wikimedia.org/wikipedia/commons/8/88/Pirate_costume_eyepatch.jpg",
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=600&fit=crop",
       "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&h=600&fit=crop",
     ],
