@@ -596,7 +596,7 @@ This theme is perfect for kids who love adventure and collecting!`,
       id: 1,
       title: "Summer Sale",
       subtitle: "Up to 70% off on all items",
-      image: "https://www.freepik.com/free-vector/gradient-summer-sale-horizontal-banner-template_26144427.htm#fromView=keyword&page=1&position=11&uuid=bc88a3be-4ddc-48cc-a348-013692ef90f3&query=Summer+Sale+Banner",
+      image: "/src/7160698.jpg",
       cta: "Shop Now",
     },
     {
