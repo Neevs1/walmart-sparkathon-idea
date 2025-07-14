@@ -1046,8 +1046,8 @@ Would you like me to show you specific products that would be perfect for recrea
 
         {/* AI Demo Integration Popup */}
         {showChatbot && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50 p-4">
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg w-full max-w max-h overflow-hidden">
               {/* Header */}
               <div className="text-center p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -1065,7 +1065,7 @@ Would you like me to show you specific products that would be perfect for recrea
 
               {/* Tab Navigation */}
               <div className="flex justify-center p-4 border-b border-gray-200">
-                <div className="bg-white rounded-lg p-1 shadow-sm border">
+                <div className="flex bg-white rounded-lg p-1 shadow-sm border">
                   {tabs.map((tab) => {
                     const Icon = tab.icon
                     return (
@@ -1252,11 +1252,7 @@ Would you like me to show you specific products that would be perfect for recrea
                         </div>
                       )}
 
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <p className="text-yellow-800">
-                          <strong>Demo Mode:</strong> This product is still underdevelopment and may cause some issues.
-                        </p>
-                      </div>
+                     
                     </div>
                   </div>
                 )}
@@ -1296,19 +1292,18 @@ Would you like me to show you specific products that would be perfect for recrea
         </section>
       )}
 
-      {/* Hero Section - Hidden when showing search results */}
+{/* Hero Section - Hidden when showing search results */}
       {!showSearchResults && (
         <section className="relative h-96 overflow-hidden">
           <div className="relative w-full h-full">
             {heroSlides.map((slide, index) => (
               <div
                 key={slide.id}
-                className={`absolute inset-0 transition-opacity duration-1000 ${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
+                  }`}
               >
                 <img src={slide.image || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center text-white">
                     <h1 className="text-4xl md:text-6xl font-bold mb-4">{slide.title}</h1>
                     <p className="text-xl md:text-2xl mb-8">{slide.subtitle}</p>
@@ -1339,14 +1334,15 @@ Would you like me to show you specific products that would be perfect for recrea
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
-                }`}
+                className={`w-3 h-3 rounded-full transition-all ${index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
+                  }`}
               />
             ))}
           </div>
         </section>
       )}
+
+
 
       {/* Categories Section - Hidden when showing search results */}
       {!showSearchResults && (
