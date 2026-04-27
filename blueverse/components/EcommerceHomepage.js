@@ -22,6 +22,7 @@ import {
   Mic,
   Upload,
   Sparkles,
+  AlertCircle
 } from "lucide-react"
 
 const EcommerceHomepage = () => {
@@ -29,7 +30,7 @@ const EcommerceHomepage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const { isAuthenticated } = useAuth()
-  const { addToCart, cartCount, setIsCartOpen } = useCart()
+  const { addToCart, cartCount, isCartOpen, setIsCartOpen } = useCart()
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [searchResults, setSearchResults] = useState([])
@@ -50,6 +51,8 @@ const EcommerceHomepage = () => {
   const [uploadedImage, setUploadedImage] = useState(null)
   const [imageAnalysisResult, setImageAnalysisResult] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [imageError, setImageError] = useState("")
+  const [isOffline, setIsOffline] = useState(false)
   const [filters, setFilters] = useState({
     category: "",
     minPrice: "",
@@ -57,6 +60,58 @@ const EcommerceHomepage = () => {
     rating: "",
     sortBy: "",
   })
+
+  // Offline status tracking
+  useEffect(() => {
+    // Check initial state
+    if (typeof navigator !== 'undefined') {
+      setIsOffline(!navigator.onLine)
+    }
+
+    const handleOnline = () => setIsOffline(false)
+    const handleOffline = () => setIsOffline(true)
+    window.addEventListener("online", handleOnline)
+    window.addEventListener("offline", handleOffline)
+    return () => {
+      window.removeEventListener("online", handleOnline)
+      window.removeEventListener("offline", handleOffline)
+    }
+  }, [])
+
+  // Exclusive modal states to prevent UI overlap glitches
+  useEffect(() => {
+    if (showAuthModal) {
+      setShowChatbot(false)
+      setIsCartOpen(false)
+    }
+  }, [showAuthModal, setIsCartOpen])
+
+  useEffect(() => {
+    if (showChatbot) {
+      setShowAuthModal(false)
+      setIsCartOpen(false)
+    }
+  }, [showChatbot, setIsCartOpen])
+
+  useEffect(() => {
+    if (isCartOpen) {
+      setShowAuthModal(false)
+      setShowChatbot(false)
+    }
+  }, [isCartOpen])
+
+  // Global escape key handler for seamless popstate UX
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setShowAuthModal(false)
+        setShowChatbot(false)
+        setIsCartOpen(false)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [setIsCartOpen])
 
   const chatMessagesRef = useRef(null)
 
@@ -128,393 +183,393 @@ const EcommerceHomepage = () => {
 
   // All products data
   const allProducts = [
-  // PIRATE THEME PRODUCTS
-  {
-    id: "1",
-    name: "Kids Pirate Costume Set",
-    price: 24.99,
-    originalPrice: 34.99,
-    discount: 29,
-    image: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Carnival_in_Valletta_-_Pirate_Costume.jpg?20131019130903",
-    rating: 4.6,
-    reviews: 187,
-    category: "Party Costumes",
-    description: "Complete pirate costume with vest, bandana, and belt for kids",
-    theme: "pirate"
-  },
-  {
-    id: "2",
-    name: "Pirate Eye Patches (Pack of 12)",
-    price: 8.99,
-    originalPrice: 12.99,
-    discount: 31,
-    image: "https://upload.wikimedia.org/wikipedia/commons/8/88/Pirate_costume_eyepatch.jpg",
-    rating: 4.3,
-    reviews: 98,
-    category: "Party Accessories",
-    description: "Black felt eye patches perfect for pirate party guests",
-    theme: "pirate"
-  },
-  {
-    id: "3",
-    name: "Wooden Treasure Chest Decoration",
-    price: 39.99,
-    originalPrice: 54.99,
-    discount: 27,
-    image: "https://c.pxhere.com/photos/0a/d2/treasure_chest_chest_gems_box_open_decoration_jewellery_chains-1111685.jpg!d",
-    rating: 4.8,
-    reviews: 145,
-    category: "Party Decorations",
-    description: "Authentic-looking wooden treasure chest for party decoration",
-    theme: "pirate"
-  },
-  {
-    id: "4",
-    name: "Pirate Ship Birthday Cake",
-    price: 45.99,
-    originalPrice: 59.99,
-    discount: 23,
-    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
-    rating: 4.9,
-    reviews: 234,
-    category: "Birthday Cakes",
-    description: "Custom pirate ship cake with edible decorations",
-    theme: "pirate"
-  },
-  {
-    id: "5",
-    name: "Pirate Captain Hats (Pack of 8)",
-    price: 16.99,
-    originalPrice: 22.99,
-    discount: 26,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 167,
-    category: "Party Accessories",
-    description: "Black tricorn pirate hats with skull and crossbones",
-    theme: "pirate"
-  },
-  {
-    id: "6",
-    name: "Gold Coin Chocolates (100 pieces)",
-    price: 19.99,
-    originalPrice: 26.99,
-    discount: 26,
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
-    rating: 4.7,
-    reviews: 312,
-    category: "Party Treats",
-    description: "Gold foil wrapped chocolate coins for treasure hunt",
-    theme: "pirate"
-  },
-  {
-    id: "7",
-    name: "Pirate Themed Balloons (Pack of 20)",
-    price: 12.99,
-    originalPrice: 17.99,
-    discount: 28,
-    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
-    rating: 4.2,
-    reviews: 89,
-    category: "Party Decorations",
-    description: "Black and red balloons with pirate skull designs",
-    theme: "pirate"
-  },
-  {
-    id: "8",
-    name: "Pirate Treasure Map Return Gifts (Pack of 10)",
-    price: 14.99,
-    originalPrice: 19.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.5,
-    reviews: 76,
-    category: "Return Gifts",
-    description: "Aged-looking treasure maps as party favors",
-    theme: "pirate"
-  },
+    // PIRATE THEME PRODUCTS
+    {
+      id: "1",
+      name: "Kids Pirate Costume Set",
+      price: 24.99,
+      originalPrice: 34.99,
+      discount: 29,
+      image: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Carnival_in_Valletta_-_Pirate_Costume.jpg?20131019130903",
+      rating: 4.6,
+      reviews: 187,
+      category: "Party Costumes",
+      description: "Complete pirate costume with vest, bandana, and belt for kids",
+      theme: "pirate"
+    },
+    {
+      id: "2",
+      name: "Pirate Eye Patches (Pack of 12)",
+      price: 8.99,
+      originalPrice: 12.99,
+      discount: 31,
+      image: "https://upload.wikimedia.org/wikipedia/commons/8/88/Pirate_costume_eyepatch.jpg",
+      rating: 4.3,
+      reviews: 98,
+      category: "Party Accessories",
+      description: "Black felt eye patches perfect for pirate party guests",
+      theme: "pirate"
+    },
+    {
+      id: "3",
+      name: "Wooden Treasure Chest Decoration",
+      price: 39.99,
+      originalPrice: 54.99,
+      discount: 27,
+      image: "https://c.pxhere.com/photos/0a/d2/treasure_chest_chest_gems_box_open_decoration_jewellery_chains-1111685.jpg!d",
+      rating: 4.8,
+      reviews: 145,
+      category: "Party Decorations",
+      description: "Authentic-looking wooden treasure chest for party decoration",
+      theme: "pirate"
+    },
+    {
+      id: "4",
+      name: "Pirate Ship Birthday Cake",
+      price: 45.99,
+      originalPrice: 59.99,
+      discount: 23,
+      image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
+      rating: 4.9,
+      reviews: 234,
+      category: "Birthday Cakes",
+      description: "Custom pirate ship cake with edible decorations",
+      theme: "pirate"
+    },
+    {
+      id: "5",
+      name: "Pirate Captain Hats (Pack of 8)",
+      price: 16.99,
+      originalPrice: 22.99,
+      discount: 26,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 167,
+      category: "Party Accessories",
+      description: "Black tricorn pirate hats with skull and crossbones",
+      theme: "pirate"
+    },
+    {
+      id: "6",
+      name: "Gold Coin Chocolates (100 pieces)",
+      price: 19.99,
+      originalPrice: 26.99,
+      discount: 26,
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop",
+      rating: 4.7,
+      reviews: 312,
+      category: "Party Treats",
+      description: "Gold foil wrapped chocolate coins for treasure hunt",
+      theme: "pirate"
+    },
+    {
+      id: "7",
+      name: "Pirate Themed Balloons (Pack of 20)",
+      price: 12.99,
+      originalPrice: 17.99,
+      discount: 28,
+      image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
+      rating: 4.2,
+      reviews: 89,
+      category: "Party Decorations",
+      description: "Black and red balloons with pirate skull designs",
+      theme: "pirate"
+    },
+    {
+      id: "8",
+      name: "Pirate Treasure Map Return Gifts (Pack of 10)",
+      price: 14.99,
+      originalPrice: 19.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 76,
+      category: "Return Gifts",
+      description: "Aged-looking treasure maps as party favors",
+      theme: "pirate"
+    },
 
-  // POKEMON THEME PRODUCTS
-  {
-    id: "9",
-    name: "Pokemon Pikachu Costume",
-    price: 29.99,
-    originalPrice: 39.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.8,
-    reviews: 203,
-    category: "Party Costumes",
-    description: "Official Pikachu costume with hood and tail",
-    theme: "pokemon"
-  },
-  {
-    id: "10",
-    name: "Pokemon Birthday Cake",
-    price: 42.99,
-    originalPrice: 55.99,
-    discount: 23,
-    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
-    rating: 4.9,
-    reviews: 267,
-    category: "Birthday Cakes",
-    description: "Custom Pokemon cake with Pikachu and Pokeball decorations",
-    theme: "pokemon"
-  },
-  {
-    id: "11",
-    name: "Pokemon Pokestop Decoration Set",
-    price: 34.99,
-    originalPrice: 44.99,
-    discount: 22,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.7,
-    reviews: 134,
-    category: "Party Decorations",
-    description: "Complete Pokestop decoration with banner and props",
-    theme: "pokemon"
-  },
-  {
-    id: "12",
-    name: "Pokemon Themed Balloons (Pack of 25)",
-    price: 15.99,
-    originalPrice: 21.99,
-    discount: 27,
-    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 112,
-    category: "Party Decorations",
-    description: "Colorful Pokemon character balloons",
-    theme: "pokemon"
-  },
-  {
-    id: "13",
-    name: "Pokemon Card Packs Return Gifts (Pack of 10)",
-    price: 24.99,
-    originalPrice: 32.99,
-    discount: 24,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.8,
-    reviews: 189,
-    category: "Return Gifts",
-    description: "Official Pokemon trading card packs for party favors",
-    theme: "pokemon"
-  },
-  {
-    id: "14",
-    name: "Pokemon Pokeball Return Gifts (Pack of 12)",
-    price: 19.99,
-    originalPrice: 26.99,
-    discount: 26,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.6,
-    reviews: 145,
-    category: "Return Gifts",
-    description: "Mini Pokeball toys that open and close",
-    theme: "pokemon"
-  },
-  {
-    id: "15",
-    name: "Pokemon Trainer Hats (Pack of 8)",
-    price: 18.99,
-    originalPrice: 24.99,
-    discount: 24,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.5,
-    reviews: 98,
-    category: "Party Accessories",
-    description: "Official Pokemon trainer caps for party guests",
-    theme: "pokemon"
-  },
-  {
-    id: "16",
-    name: "Pokemon Plushie Set (Pack of 6)",
-    price: 39.99,
-    originalPrice: 52.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
-    rating: 4.9,
-    reviews: 234,
-    category: "Return Gifts",
-    description: "Small Pokemon plush toys including Pikachu, Charmander, and Squirtle",
-    theme: "pokemon"
-  },
+    // POKEMON THEME PRODUCTS
+    {
+      id: "9",
+      name: "Pokemon Pikachu Costume",
+      price: 29.99,
+      originalPrice: 39.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.8,
+      reviews: 203,
+      category: "Party Costumes",
+      description: "Official Pikachu costume with hood and tail",
+      theme: "pokemon"
+    },
+    {
+      id: "10",
+      name: "Pokemon Birthday Cake",
+      price: 42.99,
+      originalPrice: 55.99,
+      discount: 23,
+      image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=300&h=300&fit=crop",
+      rating: 4.9,
+      reviews: 267,
+      category: "Birthday Cakes",
+      description: "Custom Pokemon cake with Pikachu and Pokeball decorations",
+      theme: "pokemon"
+    },
+    {
+      id: "11",
+      name: "Pokemon Pokestop Decoration Set",
+      price: 34.99,
+      originalPrice: 44.99,
+      discount: 22,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.7,
+      reviews: 134,
+      category: "Party Decorations",
+      description: "Complete Pokestop decoration with banner and props",
+      theme: "pokemon"
+    },
+    {
+      id: "12",
+      name: "Pokemon Themed Balloons (Pack of 25)",
+      price: 15.99,
+      originalPrice: 21.99,
+      discount: 27,
+      image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 112,
+      category: "Party Decorations",
+      description: "Colorful Pokemon character balloons",
+      theme: "pokemon"
+    },
+    {
+      id: "13",
+      name: "Pokemon Card Packs Return Gifts (Pack of 10)",
+      price: 24.99,
+      originalPrice: 32.99,
+      discount: 24,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.8,
+      reviews: 189,
+      category: "Return Gifts",
+      description: "Official Pokemon trading card packs for party favors",
+      theme: "pokemon"
+    },
+    {
+      id: "14",
+      name: "Pokemon Pokeball Return Gifts (Pack of 12)",
+      price: 19.99,
+      originalPrice: 26.99,
+      discount: 26,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.6,
+      reviews: 145,
+      category: "Return Gifts",
+      description: "Mini Pokeball toys that open and close",
+      theme: "pokemon"
+    },
+    {
+      id: "15",
+      name: "Pokemon Trainer Hats (Pack of 8)",
+      price: 18.99,
+      originalPrice: 24.99,
+      discount: 24,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 98,
+      category: "Party Accessories",
+      description: "Official Pokemon trainer caps for party guests",
+      theme: "pokemon"
+    },
+    {
+      id: "16",
+      name: "Pokemon Plushie Set (Pack of 6)",
+      price: 39.99,
+      originalPrice: 52.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+      rating: 4.9,
+      reviews: 234,
+      category: "Return Gifts",
+      description: "Small Pokemon plush toys including Pikachu, Charmander, and Squirtle",
+      theme: "pokemon"
+    },
 
-  // ELECTRONICS
-  {
-    id: "17",
-    name: "Bluetooth Party Speaker",
-    price: 79.99,
-    originalPrice: 99.99,
-    discount: 20,
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
-    rating: 4.6,
-    reviews: 324,
-    category: "Electronics",
-    description: "Portable wireless speaker with LED lights perfect for parties"
-  },
-  {
-    id: "18",
-    name: "Digital Camera for Kids",
-    price: 45.99,
-    originalPrice: 59.99,
-    discount: 23,
-    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
-    rating: 4.3,
-    reviews: 156,
-    category: "Electronics",
-    description: "Kid-friendly digital camera with fun filters and games"
-  },
-  {
-    id: "19",
-    name: "LED Strip Lights",
-    price: 24.99,
-    originalPrice: 34.99,
-    discount: 29,
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 267,
-    category: "Electronics",
-    description: "Color-changing LED lights for party room decoration"
-  },
-  {
-    id: "20",
-    name: "Instant Polaroid Camera",
-    price: 89.99,
-    originalPrice: 119.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
-    rating: 4.7,
-    reviews: 189,
-    category: "Electronics",
-    description: "Instant camera for capturing party memories"
-  },
-  {
-    id: "21",
-    name: "Wireless Headphones",
-    price: 69.99,
-    originalPrice: 89.99,
-    discount: 22,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-    rating: 4.5,
-    reviews: 234,
-    category: "Electronics",
-    description: "Comfortable wireless headphones for kids"
-  },
-  {
-    id: "22",
-    name: "Gaming Tablet for Kids",
-    price: 149.99,
-    originalPrice: 199.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop",
-    rating: 4.6,
-    reviews: 178,
-    category: "Electronics",
-    description: "Educational gaming tablet with parental controls"
-  },
+    // ELECTRONICS
+    {
+      id: "17",
+      name: "Bluetooth Party Speaker",
+      price: 79.99,
+      originalPrice: 99.99,
+      discount: 20,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
+      rating: 4.6,
+      reviews: 324,
+      category: "Electronics",
+      description: "Portable wireless speaker with LED lights perfect for parties"
+    },
+    {
+      id: "18",
+      name: "Digital Camera for Kids",
+      price: 45.99,
+      originalPrice: 59.99,
+      discount: 23,
+      image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
+      rating: 4.3,
+      reviews: 156,
+      category: "Electronics",
+      description: "Kid-friendly digital camera with fun filters and games"
+    },
+    {
+      id: "19",
+      name: "LED Strip Lights",
+      price: 24.99,
+      originalPrice: 34.99,
+      discount: 29,
+      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 267,
+      category: "Electronics",
+      description: "Color-changing LED lights for party room decoration"
+    },
+    {
+      id: "20",
+      name: "Instant Polaroid Camera",
+      price: 89.99,
+      originalPrice: 119.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop",
+      rating: 4.7,
+      reviews: 189,
+      category: "Electronics",
+      description: "Instant camera for capturing party memories"
+    },
+    {
+      id: "21",
+      name: "Wireless Headphones",
+      price: 69.99,
+      originalPrice: 89.99,
+      discount: 22,
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 234,
+      category: "Electronics",
+      description: "Comfortable wireless headphones for kids"
+    },
+    {
+      id: "22",
+      name: "Gaming Tablet for Kids",
+      price: 149.99,
+      originalPrice: 199.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop",
+      rating: 4.6,
+      reviews: 178,
+      category: "Electronics",
+      description: "Educational gaming tablet with parental controls"
+    },
 
-  // CLOTHING & SHOES
-  {
-    id: "23",
-    name: "Boys Superhero T-Shirt",
-    price: 16.99,
-    originalPrice: 22.99,
-    discount: 26,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 145,
-    category: "Clothing",
-    description: "Cotton superhero themed t-shirt for boys"
-  },
-  {
-    id: "24",
-    name: "Kids Sneakers",
-    price: 39.99,
-    originalPrice: 54.99,
-    discount: 27,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
-    rating: 4.5,
-    reviews: 198,
-    category: "Shoes",
-    description: "Comfortable athletic sneakers for active kids"
-  },
-  {
-    id: "25",
-    name: "Boys Cargo Shorts",
-    price: 19.99,
-    originalPrice: 26.99,
-    discount: 26,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-    rating: 4.3,
-    reviews: 123,
-    category: "Clothing",
-    description: "Comfortable cargo shorts with multiple pockets"
-  },
-  {
-    id: "26",
-    name: "Kids Light-Up Shoes",
-    price: 44.99,
-    originalPrice: 59.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
-    rating: 4.7,
-    reviews: 276,
-    category: "Shoes",
-    description: "Fun LED light-up shoes that kids love"
-  },
-  {
-    id: "27",
-    name: "Boys Hoodie Jacket",
-    price: 29.99,
-    originalPrice: 39.99,
-    discount: 25,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 167,
-    category: "Clothing",
-    description: "Warm and comfortable hoodie for boys"
-  },
-  {
-    id: "28",
-    name: "Canvas Backpack",
-    price: 24.99,
-    originalPrice: 34.99,
-    discount: 29,
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
-    rating: 4.3,
-    reviews: 134,
-    category: "Accessories",
-    description: "Durable canvas backpack for school or travel"
-  },
-  {
-    id: "29",
-    name: "Kids Baseball Cap",
-    price: 12.99,
-    originalPrice: 17.99,
-    discount: 28,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-    rating: 4.2,
-    reviews: 89,
-    category: "Accessories",
-    description: "Adjustable baseball cap for kids"
-  },
-  {
-    id: "30",
-    name: "Boys Swim Shorts",
-    price: 18.99,
-    originalPrice: 24.99,
-    discount: 24,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
-    rating: 4.4,
-    reviews: 112,
-    category: "Clothing",
-    description: "Quick-dry swim shorts with fun patterns"
-  }
-];
+    // CLOTHING & SHOES
+    {
+      id: "23",
+      name: "Boys Superhero T-Shirt",
+      price: 16.99,
+      originalPrice: 22.99,
+      discount: 26,
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 145,
+      category: "Clothing",
+      description: "Cotton superhero themed t-shirt for boys"
+    },
+    {
+      id: "24",
+      name: "Kids Sneakers",
+      price: 39.99,
+      originalPrice: 54.99,
+      discount: 27,
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
+      rating: 4.5,
+      reviews: 198,
+      category: "Shoes",
+      description: "Comfortable athletic sneakers for active kids"
+    },
+    {
+      id: "25",
+      name: "Boys Cargo Shorts",
+      price: 19.99,
+      originalPrice: 26.99,
+      discount: 26,
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+      rating: 4.3,
+      reviews: 123,
+      category: "Clothing",
+      description: "Comfortable cargo shorts with multiple pockets"
+    },
+    {
+      id: "26",
+      name: "Kids Light-Up Shoes",
+      price: 44.99,
+      originalPrice: 59.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
+      rating: 4.7,
+      reviews: 276,
+      category: "Shoes",
+      description: "Fun LED light-up shoes that kids love"
+    },
+    {
+      id: "27",
+      name: "Boys Hoodie Jacket",
+      price: 29.99,
+      originalPrice: 39.99,
+      discount: 25,
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 167,
+      category: "Clothing",
+      description: "Warm and comfortable hoodie for boys"
+    },
+    {
+      id: "28",
+      name: "Canvas Backpack",
+      price: 24.99,
+      originalPrice: 34.99,
+      discount: 29,
+      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+      rating: 4.3,
+      reviews: 134,
+      category: "Accessories",
+      description: "Durable canvas backpack for school or travel"
+    },
+    {
+      id: "29",
+      name: "Kids Baseball Cap",
+      price: 12.99,
+      originalPrice: 17.99,
+      discount: 28,
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+      rating: 4.2,
+      reviews: 89,
+      category: "Accessories",
+      description: "Adjustable baseball cap for kids"
+    },
+    {
+      id: "30",
+      name: "Boys Swim Shorts",
+      price: 18.99,
+      originalPrice: 24.99,
+      discount: 24,
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop",
+      rating: 4.4,
+      reviews: 112,
+      category: "Clothing",
+      description: "Quick-dry swim shorts with fun patterns"
+    }
+  ];
 
   // Hero slider data
-   const heroSlides = [
+  const heroSlides = [
     {
       id: 1,
       title: "Summer Sale",
@@ -560,11 +615,15 @@ const EcommerceHomepage = () => {
   ]
 
   // Handle chatbot submit — calls Gemini via backend
-  const handleChatSubmit = async (e) => {
-    e.preventDefault()
-    if (!chatInput.trim() || isBotTyping) return
+  const handleChatSubmit = async (e, overrideMessage = null) => {
+    if (e) e.preventDefault()
 
-    const userMessage = chatInput.trim()
+    const rawMessage = typeof overrideMessage === 'string' ? overrideMessage : chatInput.trim()
+    if (!rawMessage || isBotTyping) return
+
+    // XSS injection guardrail
+    const userMessage = rawMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
     const newUserMessage = {
       id: Date.now().toString(),
       role: "user",
@@ -573,7 +632,7 @@ const EcommerceHomepage = () => {
     }
 
     setChatMessages((prev) => [...prev, newUserMessage])
-    setChatInput("")
+    if (!overrideMessage) setChatInput("")
     setIsBotTyping(true)
 
     try {
@@ -596,6 +655,7 @@ const EcommerceHomepage = () => {
         role: "bot",
         content: data.reply || "Sorry, I couldn't process that. Please try again!",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        isError: !res.ok
       }
 
       setChatMessages((prev) => [...prev, botMessage])
@@ -605,6 +665,7 @@ const EcommerceHomepage = () => {
         role: "bot",
         content: "I'm having trouble connecting right now. Please make sure the backend server is running and try again.",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        isError: true,
       }
       setChatMessages((prev) => [...prev, errorMessage])
     } finally {
@@ -613,8 +674,13 @@ const EcommerceHomepage = () => {
   }
   // Handle image upload
   const handleImageUpload = (e) => {
+    setImageError("")
     const file = e.target.files?.[0]
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        setImageError("Please upload a valid image file.")
+        return
+      }
       const reader = new FileReader()
       reader.onload = (e) => {
         setUploadedImage(e.target?.result)
@@ -631,24 +697,24 @@ const EcommerceHomepage = () => {
 
     // Simulate AI analysis delay
     setTimeout(() => {
-      const analysisResult = `🎉 **Birthday Party Image Analysis Results:**
+      const analysisResult = `🎉 Birthday Party Image Analysis Results:
 
-**Detected Objects & Themes:**
-- Birthday cake with candles
-- Colorful balloons and streamers
-- Party decorations
-- Gift boxes and party favors
-- Children's party setup
+Detected Objects & Themes:
+• Birthday cake with candles
+• Colorful balloons and streamers
+• Party decorations
+• Gift boxes and party favors
+• Children's party setup
 
-**Recommended Products for Your Party:**
+Recommended Products for Your Party:
 
 Based on the birthday party theme detected in your image, here are some perfect products from our store:
 
-🎈 **Party Decorations:** Balloon sets, streamers, banners
-🎂 **Cake Accessories:** Candles, cake toppers, serving plates  
-🎁 **Party Favors:** Gift bags, small toys, candy assortments
-🎭 **Costumes & Accessories:** Theme-based costumes, party hats
-🎪 **Activities:** Party games, craft supplies, entertainment items
+🎈 Party Decorations: Balloon sets, streamers, banners
+🎂 Cake Accessories: Candles, cake toppers, serving plates  
+🎁 Party Favors: Gift bags, small toys, candy assortments
+🎭 Costumes & Accessories: Theme-based costumes, party hats
+🎪 Activities: Party games, craft supplies, entertainment items
 
 Would you like me to show you specific products that would be perfect for recreating this party theme?`
 
@@ -659,58 +725,55 @@ Would you like me to show you specific products that would be perfect for recrea
 
   // Search function
   const performSearch = (query, appliedFilters = filters) => {
-    setLoading(true)
-    // Simulate API delay
-    setTimeout(() => {
-      let results = allProducts
+    let results = [...allProducts]
 
-      // Filter by search query
-      if (query.trim()) {
-        results = results.filter(
-          (product) =>
-            product.name.toLowerCase().includes(query.toLowerCase()) ||
-            product.description.toLowerCase().includes(query.toLowerCase()) ||
-            product.category.toLowerCase().includes(query.toLowerCase()),
-        )
-      }
+    // Filter by search query
+    if (query.trim()) {
+      results = results.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query.toLowerCase()) ||
+          product.description.toLowerCase().includes(query.toLowerCase()) ||
+          product.category.toLowerCase().includes(query.toLowerCase()),
+      )
+    }
 
-      // Apply filters
-      if (appliedFilters.category) {
-        results = results.filter((product) => product.category === appliedFilters.category)
-      }
-      if (appliedFilters.minPrice) {
-        results = results.filter((product) => product.price >= Number.parseFloat(appliedFilters.minPrice))
-      }
-      if (appliedFilters.maxPrice) {
-        results = results.filter((product) => product.price <= Number.parseFloat(appliedFilters.maxPrice))
-      }
-      if (appliedFilters.rating) {
-        results = results.filter((product) => product.rating >= Number.parseFloat(appliedFilters.rating))
-      }
+    // Apply filters
+    if (appliedFilters.category) {
+      results = results.filter((product) => product.category === appliedFilters.category)
+    }
+    if (appliedFilters.minPrice) {
+      results = results.filter((product) => product.price >= Number.parseFloat(appliedFilters.minPrice))
+    }
+    if (appliedFilters.maxPrice) {
+      results = results.filter((product) => product.price <= Number.parseFloat(appliedFilters.maxPrice))
+    }
+    if (appliedFilters.rating) {
+      results = results.filter((product) => product.rating >= Number.parseFloat(appliedFilters.rating))
+    }
 
-      // Sort results
-      if (appliedFilters.sortBy === "price-low") {
-        results.sort((a, b) => a.price - b.price)
-      } else if (appliedFilters.sortBy === "price-high") {
-        results.sort((a, b) => b.price - a.price)
-      } else if (appliedFilters.sortBy === "rating") {
-        results.sort((a, b) => b.rating - a.rating)
-      } else if (appliedFilters.sortBy === "reviews") {
-        results.sort((a, b) => b.reviews - a.reviews)
-      }
+    // Sort results
+    if (appliedFilters.sortBy === "price-low") {
+      results.sort((a, b) => a.price - b.price)
+    } else if (appliedFilters.sortBy === "price-high") {
+      results.sort((a, b) => b.price - a.price)
+    } else if (appliedFilters.sortBy === "rating") {
+      results.sort((a, b) => b.rating - a.rating)
+    } else if (appliedFilters.sortBy === "reviews") {
+      results.sort((a, b) => b.reviews - a.reviews)
+    }
 
-      setSearchResults(results)
-      setShowSearchResults(true)
-      setLoading(false)
-    }, 300)
+    setSearchResults(results)
+    setShowSearchResults(true)
   }
 
   // Handle search input
   const handleSearchChange = (e) => {
     const query = e.target.value
     setSearchQuery(query)
-    if (query.trim()) {
-      performSearch(query)
+
+    const hasActiveFilters = Object.values(filters).some((v) => v !== "")
+    if (query.trim() || hasActiveFilters) {
+      performSearch(query, filters)
     } else {
       setShowSearchResults(false)
       setSearchResults([])
@@ -720,8 +783,9 @@ Would you like me to show you specific products that would be perfect for recrea
   // Handle search submit
   const handleSearchSubmit = (e) => {
     e.preventDefault()
-    if (searchQuery.trim()) {
-      performSearch(searchQuery)
+    const hasActiveFilters = Object.values(filters).some((v) => v !== "")
+    if (searchQuery.trim() || hasActiveFilters) {
+      performSearch(searchQuery, filters)
     }
   }
 
@@ -729,8 +793,13 @@ Would you like me to show you specific products that would be perfect for recrea
   const handleFilterChange = (filterType, value) => {
     const newFilters = { ...filters, [filterType]: value }
     setFilters(newFilters)
-    if (searchQuery.trim() || Object.values(newFilters).some((v) => v)) {
+
+    const hasActiveFilters = Object.values(newFilters).some((v) => v !== "")
+    if (searchQuery.trim() || hasActiveFilters) {
       performSearch(searchQuery, newFilters)
+    } else {
+      setShowSearchResults(false)
+      setSearchResults([])
     }
   }
 
@@ -754,7 +823,7 @@ Would you like me to show you specific products that would be perfect for recrea
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [heroSlides.length])
+  }, [heroSlides.length, currentSlide])
 
   // Auto-scroll chat to bottom when new messages are added
   useEffect(() => {
@@ -774,7 +843,14 @@ Would you like me to show you specific products that would be perfect for recrea
   // addToCart is now provided by CartContext
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Offline network banner */}
+      {isOffline && (
+        <div className="bg-red-500 text-white text-center py-2 px-4 shadow-md flex justify-center items-center gap-2 font-medium z-[100] sticky top-0 animate-pulse">
+          <AlertCircle className="w-4 h-4" /> You are currently offline. Some application features may be unavailable.
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -800,7 +876,7 @@ Would you like me to show you specific products that would be perfect for recrea
           </div>
 
           {/* Main header */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex flex-wrap items-center justify-between py-4 gap-y-4">
             <div className="flex items-center space-x-8">
               <Link href="/" className="text-2xl font-bold text-blue-600">
                 ShopMart
@@ -820,7 +896,7 @@ Would you like me to show you specific products that would be perfect for recrea
             </div>
 
             {/* Enhanced Search Bar with Chatbot */}
-            <div className="flex-1 max-w-xl mx-8">
+            <div className="w-full order-last md:order-none md:flex-1 max-w-xl mx-0 md:mx-8">
               <form onSubmit={handleSearchSubmit} className="relative">
                 <input
                   type="text"
@@ -871,7 +947,7 @@ Would you like me to show you specific products that would be perfect for recrea
             </div>
 
             {/* Header Actions */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               {isAuthenticated ? (
                 <UserDropdown />
               ) : (
@@ -1006,11 +1082,10 @@ Would you like me to show you specific products that would be perfect for recrea
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
-                          activeTab === tab.id
-                            ? "bg-blue-500 text-white shadow-sm"
-                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${activeTab === tab.id
+                          ? "bg-blue-500 text-white shadow-sm"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          }`}
                       >
                         <Icon className="w-4 h-4" />
                         {tab.label}
@@ -1035,9 +1110,12 @@ Would you like me to show you specific products that would be perfect for recrea
                           className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                         >
                           <div
-                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                              message.role === "user" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"
-                            }`}
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.role === "user"
+                              ? "bg-blue-500 text-white"
+                              : message.isError
+                                ? "bg-red-50 text-red-600 border border-red-200"
+                                : "bg-gray-100 text-gray-900"
+                              }`}
                           >
                             <p className="whitespace-pre-wrap">{message.content}</p>
                             <p
@@ -1064,7 +1142,8 @@ Would you like me to show you specific products that would be perfect for recrea
                           value={chatInput}
                           onChange={(e) => setChatInput(e.target.value)}
                           placeholder="Type your message..."
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          disabled={isBotTyping}
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:bg-gray-50"
                         />
                         <button
                           type="button"
@@ -1072,32 +1151,40 @@ Would you like me to show you specific products that would be perfect for recrea
                         >
                           <Mic className="w-4 h-4" />
                         </button>
-                        <button type="submit" className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        <button
+                          type="submit"
+                          disabled={isBotTyping || !chatInput.trim()}
+                          className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
                           <Send className="w-4 h-4" />
                         </button>
                       </form>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <button
-                          onClick={() => setChatInput("Help me plan a birthday party")}
-                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                          onClick={() => handleChatSubmit(null, "Help me plan a birthday party")}
+                          disabled={isBotTyping}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           🎉 Plan a party
                         </button>
                         <button
-                          onClick={() => setChatInput("What are your best deals today?")}
-                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                          onClick={() => handleChatSubmit(null, "What are your best deals today?")}
+                          disabled={isBotTyping}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           🏷️ Best deals
                         </button>
                         <button
-                          onClick={() => setChatInput("Suggest gift ideas for a 10 year old")}
-                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                          onClick={() => handleChatSubmit(null, "Suggest gift ideas for a 10 year old")}
+                          disabled={isBotTyping}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           🎁 Gift ideas
                         </button>
                         <button
-                          onClick={() => setChatInput("What electronics do you recommend?")}
-                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
+                          onClick={() => handleChatSubmit(null, "What electronics do you recommend?")}
+                          disabled={isBotTyping}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           📱 Electronics
                         </button>
@@ -1114,7 +1201,7 @@ Would you like me to show you specific products that would be perfect for recrea
                     </div>
                     <div className="p-6 space-y-6">
                       {!uploadedImage ? (
-                        <div className="relative">
+                        <div className="relative text-center">
                           <input
                             type="file"
                             accept="image/*"
@@ -1124,41 +1211,45 @@ Would you like me to show you specific products that would be perfect for recrea
                           />
                           <label
                             htmlFor="image-upload"
-                            className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors block"
+                            className={`border-2 border-dashed ${imageError ? 'border-red-400 bg-red-50 hover:bg-red-100' : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'} rounded-lg p-12 text-center cursor-pointer transition-colors block`}
                           >
-                            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <Upload className={`w-12 h-12 mx-auto mb-4 ${imageError ? 'text-red-400' : 'text-gray-400'}`} />
                             <p className="text-gray-600 text-lg">Click to upload an image</p>
                             <p className="text-gray-500 text-sm mt-2">
                               Upload an image and I'll identify shopping objects for you!
                             </p>
                           </label>
+                          {imageError && <p className="text-red-500 text-sm text-center mt-3 font-medium">{imageError}</p>}
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          <div className="relative">
+                          <div className="relative overflow-hidden rounded-lg">
                             <img
                               src={uploadedImage || "/placeholder.svg"}
                               alt="Uploaded birthday party"
-                              className="w-full max-h-64 object-cover rounded-lg border"
+                              className={`w-full max-h-64 object-cover border transition-all duration-700 ${isAnalyzing ? 'blur-sm scale-105 brightness-75' : 'blur-0 scale-100'}`}
                             />
+                            {isAnalyzing && (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-[2px] z-10 transition-opacity">
+                                <div className="relative">
+                                  <div className="animate-ping absolute inset-0 rounded-full border-2 border-blue-400 opacity-20"></div>
+                                  <div className="animate-spin rounded-full h-12 w-12 border-t-[3px] border-l-[3px] border-white shadow-lg mb-4"></div>
+                                </div>
+                                <span className="text-white font-semibold tracking-wide text-sm bg-black/50 px-4 py-2 rounded-full border border-white/20 backdrop-blur-md shadow-xl">Scanning items...</span>
+                              </div>
+                            )}
                             <button
                               onClick={() => {
                                 setUploadedImage(null)
                                 setImageAnalysisResult("")
                                 setIsAnalyzing(false)
+                                setImageError("")
                               }}
-                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                              className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg z-20 transition-transform hover:scale-110"
                             >
                               <X className="w-4 h-4" />
                             </button>
                           </div>
-
-                          {isAnalyzing && (
-                            <div className="flex items-center justify-center p-8">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
-                              <span className="text-gray-600">Analyzing image for shopping objects...</span>
-                            </div>
-                          )}
 
                           {imageAnalysisResult && (
                             <div className="bg-gray-50 rounded-lg p-4">
@@ -1180,8 +1271,11 @@ Would you like me to show you specific products that would be perfect for recrea
                                       <div className="flex items-center justify-between">
                                         <span className="text-blue-600 font-bold text-sm">${product.price}</span>
                                         <button
-                                          onClick={() => addToCart(product)}
-                                          className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600"
+                                          onClick={() => {
+                                            addToCart(product)
+                                            setIsCartOpen(true)
+                                          }}
+                                          className="bg-blue-500 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-600 font-medium transition-colors shadow-sm"
                                         >
                                           Add to Cart
                                         </button>
@@ -1195,7 +1289,7 @@ Would you like me to show you specific products that would be perfect for recrea
                         </div>
                       )}
 
-                     
+
                     </div>
                   </div>
                 )}
@@ -1210,7 +1304,11 @@ Would you like me to show you specific products that would be perfect for recrea
         <section className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
-              {loading ? "Searching..." : `Search Results for "${searchQuery}"`}
+              {loading
+                ? "Searching..."
+                : searchQuery
+                  ? `Search Results for "${searchQuery}"`
+                  : "Filtered Results"}
             </h2>
             <span className="text-gray-600">{!loading && `${searchResults.length} products found`}</span>
           </div>
@@ -1235,7 +1333,7 @@ Would you like me to show you specific products that would be perfect for recrea
         </section>
       )}
 
-{/* Hero Section - Hidden when showing search results */}
+      {/* Hero Section - Hidden when showing search results */}
       {!showSearchResults && (
         <section className="relative h-96 overflow-hidden">
           <div className="relative w-full h-full">

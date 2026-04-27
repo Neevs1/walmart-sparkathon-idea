@@ -1,6 +1,6 @@
 "use client"
-import { useState } from "react"
-import { X, Eye, EyeOff, Mail, Lock, User, Sparkles, Loader2 } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
+import { X, Eye, EyeOff, Mail, Lock, User, Sparkles, Loader2, AlertCircle } from "lucide-react"
 import { useAuth } from "../contexts/AuthContext"
 
 export default function AuthModal({ isOpen, onClose }) {
@@ -16,8 +16,16 @@ export default function AuthModal({ isOpen, onClose }) {
   const [formErrors, setFormErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
+  const autoCloseTimer = useRef(null)
 
   const { login, register, error: authError, setError } = useAuth()
+
+  // Clean up auto-close timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoCloseTimer.current) clearTimeout(autoCloseTimer.current)
+    }
+  }, [])
 
   if (!isOpen) return null
 
@@ -80,12 +88,20 @@ export default function AuthModal({ isOpen, onClose }) {
 
     if (result.success) {
       setSuccessMessage(result.message)
-      setTimeout(() => {
+      if (autoCloseTimer.current) clearTimeout(autoCloseTimer.current)
+      autoCloseTimer.current = setTimeout(() => {
         onClose()
         setSuccessMessage("")
         resetForm()
       }, 1200)
     }
+  }
+
+  const handleClose = () => {
+    if (isSubmitting) return
+    if (autoCloseTimer.current) clearTimeout(autoCloseTimer.current)
+    onClose()
+    resetForm()
   }
 
   const resetForm = () => {
@@ -105,13 +121,13 @@ export default function AuthModal({ isOpen, onClose }) {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={() => { onClose(); resetForm() }}
+        onClick={handleClose}
         style={{ animation: "fadeIn 0.2s ease-out" }}
       />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[95vh]"
         style={{ animation: "slideUp 0.3s ease-out" }}
       >
         {/* Gradient top accent */}
@@ -119,8 +135,9 @@ export default function AuthModal({ isOpen, onClose }) {
 
         {/* Close button */}
         <button
-          onClick={() => { onClose(); resetForm() }}
-          className="absolute top-5 right-4 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+          onClick={handleClose}
+          disabled={isSubmitting}
+          className="absolute top-5 right-4 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <X className="w-5 h-5" />
         </button>
@@ -176,8 +193,16 @@ export default function AuthModal({ isOpen, onClose }) {
 
         {/* Auth error from backend */}
         {authError && (
-          <div className="mx-8 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center font-medium">
-            {authError}
+          <div className="mx-8 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center font-medium flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span className="flex-1">{authError}</span>
+            <button
+              type="button"
+              onClick={() => setError(null)}
+              className="p-0.5 hover:bg-red-100 rounded-full transition-colors flex-shrink-0"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
 

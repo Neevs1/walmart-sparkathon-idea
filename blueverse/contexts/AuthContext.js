@@ -12,31 +12,38 @@ export function AuthProvider({ children }) {
 
   // Rehydrate user on mount from stored JWT
   useEffect(() => {
-    const token = localStorage.getItem("shopmart_token")
+    let cancelled = false
+    const token = (() => {
+      try { return localStorage.getItem("shopmart_token") } catch { return null }
+    })()
+
     if (token) {
-      fetchCurrentUser(token)
+      fetchCurrentUser(token, cancelled)
     } else {
       setLoading(false)
     }
+
+    return () => { cancelled = true }
   }, [])
 
-  const fetchCurrentUser = async (token) => {
+  const fetchCurrentUser = async (token, cancelled) => {
     try {
       const res = await fetch(`${API_URL}/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
+      if (cancelled) return
       if (res.ok) {
         const data = await res.json()
         setUser(data.user)
       } else {
-        // Token invalid/expired
-        localStorage.removeItem("shopmart_token")
+        // Token invalid/expired — clear it
+        try { localStorage.removeItem("shopmart_token") } catch {}
       }
     } catch (err) {
       console.error("Failed to fetch user:", err)
-      localStorage.removeItem("shopmart_token")
+      // Keep token — might be a temporary network issue
     } finally {
-      setLoading(false)
+      if (!cancelled) setLoading(false)
     }
   }
 
@@ -54,12 +61,15 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || "Registration failed")
       }
 
-      localStorage.setItem("shopmart_token", data.token)
+      try { localStorage.setItem("shopmart_token", data.token) } catch {}
       setUser(data.user)
       return { success: true, message: data.message }
     } catch (err) {
-      setError(err.message)
-      return { success: false, message: err.message }
+      const message = err.name === "TypeError"
+        ? "Unable to connect to the server. Please check your connection."
+        : err.message
+      setError(message)
+      return { success: false, message }
     }
   }
 
@@ -77,20 +87,25 @@ export function AuthProvider({ children }) {
         throw new Error(data.message || "Login failed")
       }
 
-      localStorage.setItem("shopmart_token", data.token)
+      try { localStorage.setItem("shopmart_token", data.token) } catch {}
       setUser(data.user)
       return { success: true, message: data.message }
     } catch (err) {
-      setError(err.message)
-      return { success: false, message: err.message }
+      const message = err.name === "TypeError"
+        ? "Unable to connect to the server. Please check your connection."
+        : err.message
+      setError(message)
+      return { success: false, message }
     }
   }
 
   const logout = () => {
-    localStorage.removeItem("shopmart_token")
+    try { localStorage.removeItem("shopmart_token") } catch {}
     setUser(null)
     setError(null)
   }
+
+  const clearError = () => setError(null)
 
   return (
     <AuthContext.Provider
@@ -102,6 +117,7 @@ export function AuthProvider({ children }) {
         register,
         login,
         logout,
+        clearError,
         setError
       }}
     >

@@ -5,6 +5,7 @@ const CartContext = createContext()
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([])
+  const [isLoaded, setIsLoaded] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
 
   // Load cart from localStorage on mount
@@ -16,20 +17,24 @@ export function CartProvider({ children }) {
       }
     } catch (err) {
       console.error("Failed to load cart:", err)
+    } finally {
+      setIsLoaded(true)
     }
   }, [])
 
   // Persist cart to localStorage
   useEffect(() => {
-    localStorage.setItem("shopmart_cart", JSON.stringify(cartItems))
-  }, [cartItems])
+    if (isLoaded) {
+      localStorage.setItem("shopmart_cart", JSON.stringify(cartItems))
+    }
+  }, [cartItems, isLoaded])
 
   const addToCart = (product) => {
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id)
+      const existing = prev.find((item) => String(item.id) === String(product.id))
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id
+          String(item.id) === String(product.id)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
@@ -39,7 +44,7 @@ export function CartProvider({ children }) {
   }
 
   const removeFromCart = (productId) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== productId))
+    setCartItems((prev) => prev.filter((item) => String(item.id) !== String(productId)))
   }
 
   const updateQuantity = (productId, quantity) => {
@@ -49,7 +54,7 @@ export function CartProvider({ children }) {
     }
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
+        String(item.id) === String(productId) ? { ...item, quantity } : item
       )
     )
   }

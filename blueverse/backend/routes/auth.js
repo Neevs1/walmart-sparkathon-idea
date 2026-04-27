@@ -17,10 +17,11 @@ const generateToken = (user) => {
 // POST /api/auth/signup — Register a new user
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
+    const email = req.body.email ? req.body.email.trim().toLowerCase() : '';
 
     // Validate input
-    if (!username || !email || !password) {
+    if (!username || !username.trim() || !email || !password) {
       return res.status(400).json({ message: 'Please provide all fields' });
     }
 
@@ -28,13 +29,16 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 
-    // Check if user already exists
-    let existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({ message: 'An account with this email already exists' });
-      }
-      return res.status(400).json({ message: 'This username is already taken' });
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(409).json({ message: 'An account with this email already exists' });
+    }
+
+    // Check if username already exists
+    const existingUsername = await User.findOne({ username: username.trim() });
+    if (existingUsername) {
+      return res.status(409).json({ message: 'This username is already taken' });
     }
 
     // Hash the password
@@ -42,7 +46,7 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create the user
-    const user = new User({ username, email, password: hashedPassword });
+    const user = new User({ username: username.trim(), email, password: hashedPassword });
     await user.save();
 
     // Generate token
@@ -54,6 +58,17 @@ router.post('/signup', async (req, res) => {
       user: { id: user._id, username: user.username, email: user.email }
     });
   } catch (err) {
+    // Catch Mongoose duplicate key error (race condition safety net)
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern || {})[0];
+      if (field === 'email') {
+        return res.status(409).json({ message: 'An account with this email already exists' });
+      }
+      if (field === 'username') {
+        return res.status(409).json({ message: 'This username is already taken' });
+      }
+      return res.status(409).json({ message: 'An account with these details already exists' });
+    }
     res.status(500).json({ message: 'Server error during sign up', error: err.message });
   }
 });
@@ -61,7 +76,8 @@ router.post('/signup', async (req, res) => {
 // POST /api/auth/login — Login with email and password
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email ? req.body.email.trim().toLowerCase() : '';
 
     // Validate input
     if (!email || !password) {
@@ -71,13 +87,13 @@ router.post('/login', async (req, res) => {
     // Find the user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'No account found with this email. Please sign up first.' });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Incorrect password. Please try again.' });
     }
 
     // Generate token

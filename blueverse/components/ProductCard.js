@@ -12,13 +12,14 @@ export function ProductCard({ product, onAddToCart }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 group">
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 group h-full flex flex-col">
       <div className="relative">
         <Link href={`/product/${product.id}`}>
           <div className="aspect-square bg-gray-100 overflow-hidden rounded-t-lg">
             <img
               src={product.image || "/placeholder.svg"}
               alt={product.name}
+              loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
             />
           </div>
@@ -40,13 +41,13 @@ export function ProductCard({ product, onAddToCart }) {
           <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
         </button>
       </div>
-      <div className="p-4 space-y-3">
+      <div className="p-4 flex flex-col flex-1">
         <Link href={`/product/${product.id}`}>
           <h3 className="font-semibold text-lg hover:text-blue-600 transition-colors cursor-pointer">{product.name}</h3>
         </Link>
         <p className="text-gray-600 text-sm line-clamp-2">{product.description}</p>
         {/* Rating Stars */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 mt-auto pt-3">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
@@ -58,7 +59,7 @@ export function ProductCard({ product, onAddToCart }) {
           <span className="text-sm text-gray-500 ml-1">({product.reviews})</span>
         </div>
         {/* Price */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-3 mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">${product.price}</span>
             <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
