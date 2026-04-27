@@ -2,6 +2,10 @@
 import { useState, useEffect, useRef } from "react"
 import { ProductCard } from "./ProductCard"
 import Link from "next/link"
+import { useAuth } from "../contexts/AuthContext"
+import { useCart } from "../contexts/CartContext"
+import AuthModal from "./AuthModal"
+import UserDropdown from "./UserDropdown"
 import {
   Search,
   MapPin,
@@ -24,7 +28,9 @@ const EcommerceHomepage = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [cartItems, setCartItems] = useState([])
+  const { isAuthenticated } = useAuth()
+  const { addToCart, cartCount, setIsCartOpen } = useCart()
+  const [showAuthModal, setShowAuthModal] = useState(false)
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -40,7 +46,7 @@ const EcommerceHomepage = () => {
     },
   ])
   const [chatInput, setChatInput] = useState("")
-  const [conversationStep, setConversationStep] = useState(0)
+  const [isBotTyping, setIsBotTyping] = useState(false)
   const [uploadedImage, setUploadedImage] = useState(null)
   const [imageAnalysisResult, setImageAnalysisResult] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -118,90 +124,7 @@ const EcommerceHomepage = () => {
     },
   ]
 
-  // Predefined conversation flow for birthday party planning
-  const conversationFlow = [
-    {
-      userMessage: "I'm planning my son's 10th birthday party",
-      botResponse:
-        "That's wonderful! I'd love to help you plan an amazing birthday party. What does your son like? Does he have any particular themes in mind?",
-    },
-    {
-      userMessage: "He likes Pirates and Pokemon",
-      botResponse: `Great choices! Let me give you detailed suggestions for both themes. Which one would you like to explore first?
-
-🏴‍☠️ **Pirate Theme** - Adventure on the high seas!
-⚡ **Pokemon Theme** - Gotta catch 'em all!
-
-Just let me know which theme interests you more, or I can provide details for both!`,
-    },
-    {
-      userMessage: "Tell me about the Pirate theme",
-      botResponse: `🏴‍☠️ **Pirate Theme Birthday Party:**
-
-**Decorations:**
-- Treasure chest centerpieces
-- Pirate ship cake
-- Black and red balloons
-- Pirate flags and banners
-- "Walk the plank" entrance
-
-**Costumes & Accessories:**
-- Pirate costumes for kids
-- Eye patches for all guests
-- Pirate hats and bandanas
-- Plastic swords
-
-**Activities:**
-- Treasure hunt game
-- "Pin the X on the treasure map"
-- Pirate ship craft station
-
-**Party Favors:**
-- Gold coin chocolates
-- Mini treasure maps
-- Plastic swords
-- Pirate stickers
-- Small treasure chests with candies
-
-This theme creates an adventurous atmosphere that kids absolutely love!`,
-    },
-    {
-      userMessage: "Tell me about the Pokemon theme",
-      botResponse: `⚡ **Pokemon Theme Birthday Party:**
-
-**Decorations:**
-- Pokemon-themed cake (Pikachu or Pokeball design)
-- Pokestop decorations around the house
-- Pokemon balloons and streamers
-- Giant Pokeball centerpieces
-- Pokemon character cutouts
-
-**Costumes & Accessories:**
-- Pokemon costumes (Pikachu, Charizard, etc.)
-- Pokemon trainer hats
-- Pokeball accessories
-
-**Activities:**
-- "Catch the Pokemon" scavenger hunt
-- Pokemon trivia contest
-- Pokemon card trading station
-- Pin the tail on Pikachu
-
-**Party Favors:**
-- Pokemon trading cards
-- Mini Pokemon figurines
-- Pokemon stickers and tattoos
-- Pokeball stress balls
-- Pokemon-themed candies
-
-This theme is perfect for kids who love adventure and collecting!`,
-    },
-    {
-      userMessage: "Thank you so much! This is really helpful.",
-      botResponse:
-        "You're very welcome! I'm glad I could help make your son's 10th birthday special. Both themes would create an unforgettable experience. Do you need help with anything else for the party planning?",
-    },
-  ]
+  // Conversation flow removed — now powered by Gemini AI via backend
 
   // All products data
   const allProducts = [
@@ -636,53 +559,57 @@ This theme is perfect for kids who love adventure and collecting!`,
     { id: "image", label: "Image Analysis", icon: ImageIcon },
   ]
 
-  // Handle chatbot submit
-  const handleChatSubmit = (e) => {
+  // Handle chatbot submit — calls Gemini via backend
+  const handleChatSubmit = async (e) => {
     e.preventDefault()
-    if (!chatInput.trim()) return
+    if (!chatInput.trim() || isBotTyping) return
 
+    const userMessage = chatInput.trim()
     const newUserMessage = {
       id: Date.now().toString(),
       role: "user",
-      content: chatInput,
+      content: userMessage,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     }
 
     setChatMessages((prev) => [...prev, newUserMessage])
     setChatInput("")
+    setIsBotTyping(true)
 
-    // Simulate bot response based on conversation flow
-    setTimeout(() => {
-      let botResponse = "I'm here to help you with your shopping needs. Feel free to ask me anything!"
+    try {
+      // Send conversation history (last 10 messages for context)
+      const history = chatMessages.slice(-10).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }))
 
-      if (conversationStep < conversationFlow.length) {
-        const currentFlow = conversationFlow[conversationStep]
-        if (chatInput.toLowerCase().includes("planning") || chatInput.toLowerCase().includes("birthday")) {
-          botResponse = currentFlow.botResponse
-          setConversationStep((prev) => prev + 1)
-        } else if (chatInput.toLowerCase().includes("pirates") && chatInput.toLowerCase().includes("pokemon")) {
-          botResponse = conversationFlow[1].botResponse
-          setConversationStep(2)
-        } else if (chatInput.toLowerCase().includes("pirate")) {
-          botResponse = conversationFlow[2].botResponse
-          setConversationStep(3)
-        } else if (chatInput.toLowerCase().includes("pokemon")) {
-          botResponse = conversationFlow[3].botResponse
-          setConversationStep(4)
-        } else if (chatInput.toLowerCase().includes("thank")) {
-          botResponse = conversationFlow[4].botResponse
-          setConversationStep(5)
-        }
-      }
+      const res = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, history })
+      })
+
+      const data = await res.json()
+
       const botMessage = {
         id: (Date.now() + 1).toString(),
         role: "bot",
-        content: botResponse,
+        content: data.reply || "Sorry, I couldn't process that. Please try again!",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       }
 
       setChatMessages((prev) => [...prev, botMessage])
-    }, 1000)
+    } catch (err) {
+      const errorMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "bot",
+        content: "I'm having trouble connecting right now. Please make sure the backend server is running and try again.",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      }
+      setChatMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setIsBotTyping(false)
+    }
   }
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -844,10 +771,7 @@ Would you like me to show you specific products that would be perfect for recrea
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
   }
 
-  const addToCart = (product) => {
-    setCartItems((prev) => [...prev, product])
-    console.log(`Added ${product.name} to cart`)
-  }
+  // addToCart is now provided by CartContext
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -948,14 +872,24 @@ Would you like me to show you specific products that would be perfect for recrea
 
             {/* Header Actions */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg">
-                <User className="w-6 h-6 text-gray-600" />
-              </button>
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg">
+              {isAuthenticated ? (
+                <UserDropdown />
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  <User className="w-6 h-6 text-gray-600" />
+                </button>
+              )}
+              <button
+                className="relative p-2 hover:bg-gray-100 rounded-lg"
+                onClick={() => setIsCartOpen(true)}
+              >
                 <ShoppingCart className="w-6 h-6 text-gray-600" />
-                {cartItems.length > 0 && (
+                {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartItems.length}
+                    {cartCount}
                   </span>
                 )}
               </button>
@@ -1091,8 +1025,8 @@ Would you like me to show you specific products that would be perfect for recrea
                 {activeTab === "chat" && (
                   <div className="bg-white rounded-lg shadow-lg border-0">
                     <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-t-lg">
-                      <h2 className="text-2xl font-bold">AI Chat Demo</h2>
-                      <p className="text-blue-100">Try asking questions or having a conversation!</p>
+                      <h2 className="text-2xl font-bold">AI Shopping Assistant</h2>
+                      <p className="text-blue-100">Powered by Gemini — ask me anything about shopping!</p>
                     </div>
                     <div ref={chatMessagesRef} className="h-80 overflow-y-auto p-4 space-y-4 scroll-smooth">
                       {chatMessages.map((message) => (
@@ -1114,6 +1048,15 @@ Would you like me to show you specific products that would be perfect for recrea
                           </div>
                         </div>
                       ))}
+                      {isBotTyping && (
+                        <div className="flex justify-start">
+                          <div className="bg-gray-100 px-4 py-3 rounded-lg flex items-center gap-1">
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="border-t p-4">
                       <form onSubmit={handleChatSubmit} className="flex gap-2">
@@ -1135,28 +1078,28 @@ Would you like me to show you specific products that would be perfect for recrea
                       </form>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <button
-                          onClick={() => setChatInput("I'm planning my son's 10th birthday party")}
+                          onClick={() => setChatInput("Help me plan a birthday party")}
                           className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          Planning birthday party
+                          🎉 Plan a party
                         </button>
                         <button
-                          onClick={() => setChatInput("He likes Pirates and Pokemon")}
+                          onClick={() => setChatInput("What are your best deals today?")}
                           className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          Pirates & Pokemon
+                          🏷️ Best deals
                         </button>
                         <button
-                          onClick={() => setChatInput("Tell me about the Pirate theme")}
+                          onClick={() => setChatInput("Suggest gift ideas for a 10 year old")}
                           className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          Pirate theme
+                          🎁 Gift ideas
                         </button>
                         <button
-                          onClick={() => setChatInput("Tell me about the Pokemon theme")}
+                          onClick={() => setChatInput("What electronics do you recommend?")}
                           className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
                         >
-                          Pokemon theme
+                          📱 Electronics
                         </button>
                       </div>
                     </div>
@@ -1489,6 +1432,9 @@ Would you like me to show you specific products that would be perfect for recrea
           </div>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   )
 }

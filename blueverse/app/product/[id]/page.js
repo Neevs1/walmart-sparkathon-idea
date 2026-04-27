@@ -1045,8 +1045,9 @@ const products = {
 
 
 
-export default function ProductDetailPage({ params }) {
-  const product = products[params.id]
+export default async function ProductDetailPage({ params }) {
+  const { id } = await params
+  const product = products[id]
 
   if (!product) {
     return (
